@@ -1,272 +1,31 @@
-// $%^&*()))))))))))))))))))))))))))))))))))))))))))))))))
-
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useState } from 'react'
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  Disclosure,
+import { useState } from 'react'
+import {Disclosure,
   DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from '@headlessui/react'
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, StarIcon } from '@heroicons/react/20/solid'
+  DisclosurePanel} from '@headlessui/react'
+import {FunnelIcon, StarIcon } from '@heroicons/react/20/solid'
 import classNames from 'classnames'
+import { Link } from 'react-router-dom'
 
-const navigation = {
-  categories: [
-    {
-      id: 'women',
-      name: 'Women',
-      featured: [
-        {
-          name: 'New Arrivals',
-          href: '#',
-          imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/mega-menu-category-01.jpg',
-          imageAlt: 'Models sitting back to back, wearing Basic Tee in black and bone.',
-        },
-        {
-          name: 'Basic Tees',
-          href: '#',
-          imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/mega-menu-category-02.jpg',
-          imageAlt: 'Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.',
-        },
-        {
-          name: 'Accessories',
-          href: '#',
-          imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/mega-menu-category-03.jpg',
-          imageAlt: 'Model wearing minimalist watch with black wristband and white watch face.',
-        },
-      ],
-      sections: [
-        [
-          {
-            id: 'shoes',
-            name: 'Shoes & Accessories',
-            items: [
-              { name: 'Sneakers', href: '#' },
-              { name: 'Boots', href: '#' },
-              { name: 'Flats', href: '#' },
-              { name: 'Sandals', href: '#' },
-              { name: 'Heels', href: '#' },
-              { name: 'Socks', href: '#' },
-            ],
-          },
-          {
-            id: 'collection',
-            name: 'Shop Collection',
-            items: [
-              { name: 'Everything', href: '#' },
-              { name: 'Core', href: '#' },
-              { name: 'New Arrivals', href: '#' },
-              { name: 'Sale', href: '#' },
-              { name: 'Accessories', href: '#' },
-            ],
-          },
-        ],
-        [
-          {
-            id: 'clothing',
-            name: 'All Clothing',
-            items: [
-              { name: 'Basic Tees', href: '#' },
-              { name: 'Artwork Tees', href: '#' },
-              { name: 'Tops', href: '#' },
-              { name: 'Bottoms', href: '#' },
-              { name: 'Swimwear', href: '#' },
-              { name: 'Underwear', href: '#' },
-            ],
-          },
-          {
-            id: 'accessories',
-            name: 'All Accessories',
-            items: [
-              { name: 'Watches', href: '#' },
-              { name: 'Wallets', href: '#' },
-              { name: 'Bags', href: '#' },
-              { name: 'Sunglasses', href: '#' },
-              { name: 'Hats', href: '#' },
-              { name: 'Belts', href: '#' },
-            ],
-          },
-        ],
-        [
-          {
-            id: 'brands',
-            name: 'Brands',
-            items: [
-              { name: 'Full Nelson', href: '#' },
-              { name: 'My Way', href: '#' },
-              { name: 'Re-Arranged', href: '#' },
-              { name: 'Counterfeit', href: '#' },
-              { name: 'Significant Other', href: '#' },
-            ],
-          },
-        ],
-      ],
-    },
-    {
-      id: 'men',
-      name: 'Men',
-      featured: [
-        {
-          name: 'Accessories',
-          href: '#',
-          imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/home-page-03-category-01.jpg',
-          imageAlt:
-            'Wooden shelf with gray and olive drab green baseball caps, next to wooden clothes hanger with sweaters.',
-        },
-        {
-          name: 'New Arrivals',
-          href: '#',
-          imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg',
-          imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
-        },
-        {
-          name: 'Artwork Tees',
-          href: '#',
-          imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-02-image-card-06.jpg',
-          imageAlt:
-            'Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.',
-        },
-      ],
-      sections: [
-        [
-          {
-            id: 'shoes',
-            name: 'Shoes & Accessories',
-            items: [
-              { name: 'Sneakers', href: '#' },
-              { name: 'Boots', href: '#' },
-              { name: 'Sandals', href: '#' },
-              { name: 'Socks', href: '#' },
-            ],
-          },
-          {
-            id: 'collection',
-            name: 'Shop Collection',
-            items: [
-              { name: 'Everything', href: '#' },
-              { name: 'Core', href: '#' },
-              { name: 'New Arrivals', href: '#' },
-              { name: 'Sale', href: '#' },
-            ],
-          },
-        ],
-        [
-          {
-            id: 'clothing',
-            name: 'All Clothing',
-            items: [
-              { name: 'Basic Tees', href: '#' },
-              { name: 'Artwork Tees', href: '#' },
-              { name: 'Pants', href: '#' },
-              { name: 'Hoodies', href: '#' },
-              { name: 'Swimsuits', href: '#' },
-            ],
-          },
-          {
-            id: 'accessories',
-            name: 'All Accessories',
-            items: [
-              { name: 'Watches', href: '#' },
-              { name: 'Wallets', href: '#' },
-              { name: 'Bags', href: '#' },
-              { name: 'Sunglasses', href: '#' },
-              { name: 'Hats', href: '#' },
-              { name: 'Belts', href: '#' },
-            ],
-          },
-        ],
-        [
-          {
-            id: 'brands',
-            name: 'Brands',
-            items: [
-              { name: 'Re-Arranged', href: '#' },
-              { name: 'Counterfeit', href: '#' },
-              { name: 'Full Nelson', href: '#' },
-              { name: 'My Way', href: '#' },
-            ],
-          },
-        ],
-      ],
-    },
-  ],
-  pages: [
-    { name: 'Company', href: '#' },
-    { name: 'Stores', href: '#' },
-  ],
-}
+
 const filters = {
   price: [
     { value: '0', label: '$0 - $25', checked: false },
     { value: '25', label: '$25 - $50', checked: false },
     { value: '50', label: '$50 - $75', checked: false },
     { value: '75', label: '$75+', checked: false },
-  ],
-  color: [
-    { value: 'white', label: 'White', checked: false },
-    { value: 'beige', label: 'Beige', checked: false },
-    { value: 'blue', label: 'Blue', checked: true },
-    { value: 'brown', label: 'Brown', checked: false },
-    { value: 'green', label: 'Green', checked: false },
-    { value: 'purple', label: 'Purple', checked: false },
-  ],
-  size: [
-    { value: 'xs', label: 'XS', checked: false },
-    { value: 's', label: 'S', checked: true },
-    { value: 'm', label: 'M', checked: false },
-    { value: 'l', label: 'L', checked: false },
-    { value: 'xl', label: 'XL', checked: false },
-    { value: '2xl', label: '2XL', checked: false },
-  ],
-  category: [
-    { value: 'all-new-arrivals', label: 'All New Arrivals', checked: false },
-    { value: 'tees', label: 'Tees', checked: false },
-    { value: 'objects', label: 'Objects', checked: false },
-    { value: 'sweatshirts', label: 'Sweatshirts', checked: false },
-    { value: 'pants-and-shorts', label: 'Pants & Shorts', checked: false },
-  ],
+  ]
 }
 
 const products = [
   {
     id: 1,
-    name: 'Organize Basic Set (Walnut)',
+    name: 'Mercedes benz',
     price: '$149',
     rating: 5,
     reviewCount: 38,
-    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-05-image-card-01.jpg',
+    imageSrc: "/img1.jpg",
     imageAlt: 'TODO',
-    href: '#',
+    href: 'details',
   },
   {
     id: 2,
@@ -274,37 +33,72 @@ const products = [
     price: '$15',
     rating: 5,
     reviewCount: 18,
-    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-05-image-card-02.jpg',
+    imageSrc: "/img2.jpg",
     imageAlt: 'TODO',
-    href: '#',
-  },
+    href: 'details',  },
   {
     id: 3,
     name: 'Organize Sticky Note Holder',
     price: '$15',
     rating: 5,
     reviewCount: 14,
-    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-05-image-card-03.jpg',
+    imageSrc: "/img3.jpg",
     imageAlt: 'TODO',
-    href: '#',
-  },
-  {
-    id: 4,
-    name: 'Organize Phone Holder',
-    price: '$15',
-    rating: 4,
-    reviewCount: 21,
-    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/category-page-05-image-card-04.jpg',
-    imageAlt: 'TODO',
-    href: '#',
-  },
+    href: 'details',  }
   // More products...
 ]
 
 
 export default function Example() {
   const [open, setOpen] = useState(false)
+  const [selectedFilters, setSelectedFilters] = useState(filters);
+    const [filterNumber, setFilterNumber] = useState(0)
+  // Update filter selection
+  const handleFilterChange = (option:any) => {
+    if (!option.checked){
+     setFilterNumber((oldVal) => {return oldVal + 1} )   
+    } else {
+        setFilterNumber((oldVal) => {
+            if (oldVal > 0) return oldVal - 1
+            return oldVal
+        } )   
 
+    }
+    setSelectedFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters };
+      updatedFilters.price = updatedFilters.price.map((filter) =>
+        filter.value === option.value
+          ? { ...filter, checked: !filter.checked }
+          : filter
+      );
+      return updatedFilters;
+    });
+};
+
+const clearFilters = () => {
+    setSelectedFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters };
+        updatedFilters.price = updatedFilters.price.map((filter) =>{return { ...filter, checked: false }});
+        return updatedFilters;
+      }); 
+
+}
+
+console.log(selectedFilters);
+  // Simulate sending selected filters to backend
+  const applyFilters = () => {
+    const activeFilters = Object.entries(selectedFilters).reduce(
+      (acc, [key, filters]) => {
+        acc[key] = filters.filter((filter) => filter.checked).map((f) => f.value);
+        return acc;
+      },
+      {}
+    );
+
+    console.log("Filters applied:", activeFilters);
+    // Backend call can go here (e.g., fetch or axios)
+  };
+  
   return (
     <div className="bg-white">
       {/* Mobile menu */}
@@ -337,11 +131,11 @@ export default function Example() {
                     aria-hidden="true"
                     className="mr-2 size-5 flex-none text-gray-400 group-hover:text-gray-500"
                   />
-                  2 Filters
+                  {filterNumber} Filters
                 </DisclosureButton>
               </div>
               <div className="pl-6">
-                <button type="button" className="text-gray-500">
+                <button type="button" className="text-gray-500" onClick={clearFilters}>
                   Clear all
                 </button>
               </div>
@@ -353,14 +147,15 @@ export default function Example() {
                 <fieldset>
                   <legend className="block font-medium">Price</legend>
                   <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
-                    {filters.price.map((option, optionIdx) => (
+                    {selectedFilters.price.map((option, optionIdx) => (
                       <div key={option.value} className="flex items-center text-base sm:text-sm">
                         <input
                           defaultValue={option.value}
-                          defaultChecked={option.checked}
                           id={`price-${optionIdx}`}
                           name="price[]"
                           type="checkbox"
+                          checked={option.checked}
+                          onChange={() => handleFilterChange(option)}
                           className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label htmlFor={`price-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
@@ -370,68 +165,8 @@ export default function Example() {
                     ))}
                   </div>
                 </fieldset>
-                <fieldset>
-                  <legend className="block font-medium">Color</legend>
-                  <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
-                    {filters.color.map((option, optionIdx) => (
-                      <div key={option.value} className="flex items-center text-base sm:text-sm">
-                        <input
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
-                          id={`color-${optionIdx}`}
-                          name="color[]"
-                          type="checkbox"
-                          className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label htmlFor={`color-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
-                          {option.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </fieldset>
               </div>
               <div className="grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6">
-                <fieldset>
-                  <legend className="block font-medium">Size</legend>
-                  <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
-                    {filters.size.map((option, optionIdx) => (
-                      <div key={option.value} className="flex items-center text-base sm:text-sm">
-                        <input
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
-                          id={`size-${optionIdx}`}
-                          name="size[]"
-                          type="checkbox"
-                          className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label htmlFor={`size-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
-                          {option.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </fieldset>
-                <fieldset>
-                  <legend className="block font-medium">Category</legend>
-                  <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
-                    {filters.category.map((option, optionIdx) => (
-                      <div key={option.value} className="flex items-center text-base sm:text-sm">
-                        <input
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
-                          id={`category-${optionIdx}`}
-                          name="category[]"
-                          type="checkbox"
-                          className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label htmlFor={`category-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
-                          {option.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </fieldset>
               </div>
             </div>
           </DisclosurePanel>
@@ -455,10 +190,10 @@ export default function Example() {
                 />
                 <div className="pb-4 pt-10 text-center">
                   <h3 className="text-sm font-medium text-gray-900">
-                    <a href={product.href}>
+                    <Link to={product.href}>
                       <span aria-hidden="true" className="absolute inset-0" />
                       {product.name}
-                    </a>
+                    </Link>
                   </h3>
                   <div className="mt-3 flex flex-col items-center">
                     <p className="sr-only">{product.rating} out of 5 stars</p>

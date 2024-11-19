@@ -23,7 +23,7 @@ import CarDetails from "../components/CarDetails";
 import Home from "./Home";
   const navigation = [
     { name: 'Home', href: '/dashboard', icon: HomeIcon, current: true },
-    { name: 'Listings', href: 'details', icon: PencilSquareIcon, current: false },
+    { name: 'Listings', href: '/dashboard/mylistings', icon: PencilSquareIcon, current: false },
   ]
   const teams = [
     { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
@@ -39,34 +39,10 @@ import Home from "./Home";
 const DashboardLayout: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     
-// /////////////////////////////////////////////////////////////////////////////
 
-
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
           <DialogBackdrop
@@ -185,20 +161,6 @@ const DashboardLayout: React.FC = () => {
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
-                  {/* <MenuButton className="-m-1.5 flex items-center p-1.5">
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      alt=""
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      className="size-8 rounded-full bg-gray-50"
-                    />
-                    <span className="hidden lg:flex lg:items-center">
-                      <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
-                        Tom Cook
-                      </span>
-                      <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400" />
-                    </span>
-                  </MenuButton> */}
                   <MenuItems
                     transition
                     className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
@@ -224,6 +186,7 @@ const DashboardLayout: React.FC = () => {
             <Routes>
             <Route path="/" element={<Home />} />
             <Route path="details" element={<CarDetails />} />
+            <Route path="mylistings" element={<Listings />} />
             {/* <Route path="profile" element={<Profile />} /> */} 
             </Routes>
             </div>
