@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 import { LoginRequest, LoginResponse } from "../types/api";
 import axios, { AxiosError } from "axios";
 const SignIn: React.FC = () => {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [formData, setFormData] = useState<LoginRequest>({
       email: "",
@@ -17,59 +15,43 @@ const SignIn: React.FC = () => {
 
 
 
-      // Handle input changes
   const handleChange = (event:any) => {
-    const { name, value } = event.target; // Destructure name and value from the event
+    const { name, value } = event.target;
     setFormData((prevData) => ({
-      ...prevData, // Preserve other form data
-      [name]: value, // Update the specific field
+      ...prevData,
+      [name]: value, 
     }));
   };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-      e.preventDefault(); // Prevent page reload
+      e.preventDefault(); 
   
       const requestData: LoginRequest = formData;
   
-      console.log(requestData);
       axios
-      .post("http://localhost:8080/api/auth/login", requestData, {
+      .post("/api/auth/login", requestData, {
         headers: {
           "Content-Type": "application/json",
         },
       })
       .then((response) => {
-        // Handle success
-        console.log("Response data:", response.data);
-    
-        // Save token to localStorage
+        // Handle success        
         localStorage.setItem("authToken", response.data.token);
     
-        // Navigate to the dashboard
         navigate("/dashboard");
       })
       .catch((err) => {
         console.log(err);
-        
         // Handle error
         const errorMessage =
-          err.response?.data?.message || "Login failed. Please try again.";
+        err.response?.data?.message || "Login failed. Please try again.";
         console.error("Error during login:", errorMessage);
-    
-        // Set error message
-        setError(errorMessage);
+     
+        setError("Invalid Email or Password")
       });
     };
    return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div className="flex min-h-full h-screen flex-1">
         
         <div  className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -88,7 +70,8 @@ const SignIn: React.FC = () => {
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit}  className="space-y-6">
-                  <div>
+                <p className="text-red-500">{error}</p>
+                <div>
                     <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
                       Email address
                     </label>
@@ -124,18 +107,6 @@ const SignIn: React.FC = () => {
                     </div>
                   </div>
 
-{/* forget password part */}
-                  {/* <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                    
-                    </div>
-
-                    <div className="text-sm/6">
-                      <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                        Forgot password?
-                      </a>
-                    </div>
-                  </div> */}
 
                   <div>
                     <button
