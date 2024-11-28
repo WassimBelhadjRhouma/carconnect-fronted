@@ -1,67 +1,64 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService"; // Import API service
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { LoginRequest, LoginResponse } from "../types/api";
 import axios, { AxiosError } from "axios";
 const SignIn: React.FC = () => {
-    const [error, setError] = useState<string>("");
-    const [formData, setFormData] = useState<LoginRequest>({
-      email: "",
-      password: "",
-    });
-    const navigate = useNavigate();
-  
+  const [error, setError] = useState<string>("");
+  const [formData, setFormData] = useState<LoginRequest>({
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
 
-
-
-  const handleChange = (event:any) => {
+  const handleChange = (event: any) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value, 
+      [name]: value,
     }));
   };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-      e.preventDefault(); 
-  
-      const requestData: LoginRequest = formData;
-  
-      axios
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+
+    const requestData: LoginRequest = formData;
+
+    axios
       .post("/api/auth/login", requestData, {
         headers: {
           "Content-Type": "application/json",
         },
       })
       .then((response) => {
-        // Handle success        
+        console.log("token:", response.data.token);
+
         localStorage.setItem("authToken", response.data.token);
-    
+
         navigate("/dashboard");
       })
       .catch((err) => {
         console.log(err);
-        // Handle error
         const errorMessage =
-        err.response?.data?.message || "Login failed. Please try again.";
+          err.response?.data?.message || "Login failed. Please try again.";
         console.error("Error during login:", errorMessage);
-     
-        setError("Invalid Email or Password")
+
+        setError("Invalid Email or Password");
       });
-    };
-   return (
+  };
+  return (
     <>
       <div className="flex min-h-full h-screen flex-1">
-        
-        <div  className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <p
-                className="flex logo"
-              >CarConnect.</p>    
+        <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <p className="flex logo">CarConnect.</p>
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-            
-              <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">Hi there!</h2>
+              <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">
+                Hi there!
+              </h2>
               <p className="mt-2 text-sm/6 text-gray-500">
                 Welcome to your carconnect
               </p>
@@ -69,10 +66,13 @@ const SignIn: React.FC = () => {
 
             <div className="mt-10">
               <div>
-                <form onSubmit={handleSubmit}  className="space-y-6">
-                <p className="text-red-500">{error}</p>
-                <div>
-                    <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <p className="text-red-500">{error}</p>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Email address
                     </label>
                     <div className="mt-2">
@@ -90,7 +90,10 @@ const SignIn: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Password
                     </label>
                     <div className="mt-2">
@@ -107,7 +110,6 @@ const SignIn: React.FC = () => {
                     </div>
                   </div>
 
-
                   <div>
                     <button
                       type="submit"
@@ -116,15 +118,17 @@ const SignIn: React.FC = () => {
                       Sign in
                     </button>
                     <p className="mt-2 text-sm/6 text-gray-500">
-                    Don’t have an account?{' '}
-                <Link to='/signup' className="font-semibold text-indigo-600 hover:text-indigo-500">
-                  sign up
-                </Link>
-              </p>
+                      Don’t have an account?{" "}
+                      <Link
+                        to="/signup"
+                        className="font-semibold text-indigo-600 hover:text-indigo-500"
+                      >
+                        sign up
+                      </Link>
+                    </p>
                   </div>
                 </form>
               </div>
-
             </div>
           </div>
         </div>
@@ -137,7 +141,7 @@ const SignIn: React.FC = () => {
         </div>
       </div>
     </>
-  )
+  );
 };
 
 export default SignIn;

@@ -1,119 +1,149 @@
-import { useState } from 'react'
-import {Disclosure,
+import { useEffect, useState } from "react";
+import {
+  Disclosure,
   DisclosureButton,
-  DisclosurePanel} from '@headlessui/react'
-import {FunnelIcon, StarIcon } from '@heroicons/react/20/solid'
-import classNames from 'classnames'
-import { Link } from 'react-router-dom'
-
-
-const filters = {
-  price: [
-    { value: '0', label: '$0 - $25', checked: false },
-    { value: '25', label: '$25 - $50', checked: false },
-    { value: '50', label: '$50 - $75', checked: false },
-    { value: '75', label: '$75+', checked: false },
-  ]
-}
-
-const products = [
-  {
-    id: 1,
-    name: 'Mercedes benz',
-    price: '$149',
-    rating: 5,
-    reviewCount: 38,
-    imageSrc: "/img1.jpg",
-    imageAlt: 'TODO',
-    href: 'details',
-  },
-  {
-    id: 2,
-    name: 'Organize Pen Holder',
-    price: '$15',
-    rating: 5,
-    reviewCount: 18,
-    imageSrc: "/img2.jpg",
-    imageAlt: 'TODO',
-    href: 'details',  },
-  {
-    id: 3,
-    name: 'Organize Sticky Note Holder',
-    price: '$15',
-    rating: 5,
-    reviewCount: 14,
-    imageSrc: "/img3.jpg",
-    imageAlt: 'TODO',
-    href: 'details',  }
-  // More products...
-]
-
+  DisclosurePanel,
+} from "@headlessui/react";
+import { FunnelIcon, StarIcon } from "@heroicons/react/20/solid";
+import classNames from "classnames";
+import { Link } from "react-router-dom";
+import { filters, priceLabels } from "../constants/FilterConstants";
+import CarService from "../services/carService";
 
 export default function Example() {
-  const [open, setOpen] = useState(false)
-  const [selectedFilters, setSelectedFilters] = useState(filters);
-    const [filterNumber, setFilterNumber] = useState(0)
-  // Update filter selection
-  const handleFilterChange = (option:any) => {
-    if (!option.checked){
-     setFilterNumber((oldVal) => {return oldVal + 1} )   
-    } else {
-        setFilterNumber((oldVal) => {
-            if (oldVal > 0) return oldVal - 1
-            return oldVal
-        } )   
+  const [cars, setCars] = useState([]);
+  const [error, setError] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState({
+    make: "",
+    drivingMode: "",
+    price: [],
+    fuelType: "",
+  });
 
-    }
-    setSelectedFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters };
-      updatedFilters.price = updatedFilters.price.map((filter) =>
-        filter.value === option.value
-          ? { ...filter, checked: !filter.checked }
-          : filter
-      );
-      return updatedFilters;
+  useEffect(() => {
+    CarService.getCars({})
+      .then((res) => {
+        setCars(res.data);
+      })
+      .catch((err) => setError(err.message));
+  }, []);
+
+  const clearFilter = () => {
+    setSelectedFilters({
+      make: "",
+      drivingMode: "",
+      price: [],
+      fuelType: "",
     });
-};
-
-const clearFilters = () => {
-    setSelectedFilters((prevFilters) => {
-        const updatedFilters = { ...prevFilters };
-        updatedFilters.price = updatedFilters.price.map((filter) =>{return { ...filter, checked: false }});
-        return updatedFilters;
-      }); 
-
-}
-
-console.log(selectedFilters);
-  // Simulate sending selected filters to backend
-  const applyFilters = () => {
-    const activeFilters = Object.entries(selectedFilters).reduce(
-      (acc, [key, filters]) => {
-        acc[key] = filters.filter((filter) => filter.checked).map((f) => f.value);
-        return acc;
-      },
-      {}
-    );
-
-    console.log("Filters applied:", activeFilters);
-    // Backend call can go here (e.g., fetch or axios)
+    CarService.getCars({})
+      .then((res) => {
+        setCars(res.data);
+      })
+      .catch((err) => setError(err.message));
   };
-  
+
+  // Update filter selection
+  const handleFilterChange = (event: any) => {
+    setSelectedFilters((oldVals) => {
+      let newFilterPart;
+      if (event.target.type !== "radio") {
+        newFilterPart = [...oldVals[event.target.name]];
+        if (event.target.checked) {
+          newFilterPart.push(event.target.value);
+        } else {
+          newFilterPart = newFilterPart.filter(
+            (el) => el !== event.target.value
+          );
+        }
+        return { ...oldVals, [event.target.name]: newFilterPart };
+      } else {
+        return { ...oldVals, [event.target.name]: event.target.value };
+      }
+    });
+  };
+
+  const priceIntervalDetector = (prices: any[]) => {
+    if (prices.length === 0) return {};
+    let newPricesArr = [];
+
+    prices.forEach((el) => {
+      switch (el) {
+        case priceLabels.level1:
+          console.log("bnj");
+
+          newPricesArr.push(0, 25);
+          break;
+        case priceLabels.level2:
+          newPricesArr.push(25);
+          break;
+        case priceLabels.level3:
+          newPricesArr.push(50);
+          break;
+        case priceLabels.level4:
+          newPricesArr.push(75.01);
+          break;
+      }
+    });
+    const largest = Math.max(...newPricesArr);
+    const smallest = Math.min(...newPricesArr);
+    if (smallest === 75.01 || largest === 75.01) {
+      return { minPrice: smallest };
+    }
+    return { minPrice: smallest, maxPrice: largest + 25 };
+  };
+
+  const appyFilterHandler = () => {
+    const finalFilters = {};
+    for (const key in selectedFilters) {
+      console.log(selectedFilters[key]);
+      if (selectedFilters[key].length > 0 && key !== "price") {
+        finalFilters[key] = selectedFilters[key];
+      }
+    }
+
+    const prices = priceIntervalDetector(selectedFilters.price);
+    // const prices = priceIntervalDetector(selectedFilters.price);
+    console.log(selectedFilters.price);
+    console.log(finalFilters);
+
+    CarService.getCars({ ...prices, ...finalFilters })
+      .then((res) => {
+        setCars(res.data);
+      })
+      .catch((err) => setError(err.message));
+  };
+
+  // Simulate sending selected filters to backend
+  // const applyFilters = () => {
+  //   const activeFilters = Object.entries(selectedFilters).reduce(
+  //     (acc, [key, filters]) => {
+  //       acc[key] = filters
+  //         .filter((filter) => filter.checked)
+  //         .map((f) => f.value);
+  //       return acc;
+  //     },
+  //     {}
+  //   );
+
+  //   console.log("Filters applied:", activeFilters);
+  //   // Backend call can go here (e.g., fetch or axios)
+  // };
+
   return (
     <div className="bg-white">
       {/* Mobile menu */}
-  
-
- 
 
       <main className="pb-24">
         <div className="px-4 py-16 text-center sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">Available cars</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+            Available cars
+          </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-gray-500">
-            What's the secret to a nice trip? 
+            What's the secret to a nice trip?
           </p>
         </div>
 
+        {/* Filters */}
         {/* Filters */}
         <Disclosure
           as="section"
@@ -131,11 +161,15 @@ console.log(selectedFilters);
                     aria-hidden="true"
                     className="mr-2 size-5 flex-none text-gray-400 group-hover:text-gray-500"
                   />
-                  {filterNumber} Filters
+                  {/* 2 Filters */}
                 </DisclosureButton>
               </div>
               <div className="pl-6">
-                <button type="button" className="text-gray-500" onClick={clearFilters}>
+                <button
+                  onClick={clearFilter}
+                  type="button"
+                  className="text-gray-500"
+                >
                   Clear all
                 </button>
               </div>
@@ -147,18 +181,51 @@ console.log(selectedFilters);
                 <fieldset>
                   <legend className="block font-medium">Price</legend>
                   <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
-                    {selectedFilters.price.map((option, optionIdx) => (
-                      <div key={option.value} className="flex items-center text-base sm:text-sm">
+                    {filters.price.map((option, optionIdx) => (
+                      <div
+                        key={option.value}
+                        className="flex items-center text-base sm:text-sm"
+                      >
+                        <input
+                          defaultValue={option.label}
+                          id={`price-${optionIdx}`}
+                          checked={selectedFilters.price.includes(option.label)}
+                          name="price"
+                          type="checkbox"
+                          className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={handleFilterChange}
+                        />
+                        <label
+                          htmlFor={`price-${optionIdx}`}
+                          className="ml-3 min-w-0 flex-1 text-gray-600"
+                        >
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend className="block font-medium">make</legend>
+                  <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
+                    {filters.make.map((option, optionIdx) => (
+                      <div
+                        key={option.value}
+                        className="flex items-center text-base sm:text-sm"
+                      >
                         <input
                           defaultValue={option.value}
-                          id={`price-${optionIdx}`}
-                          name="price[]"
-                          type="checkbox"
-                          checked={option.checked}
-                          onChange={() => handleFilterChange(option)}
+                          id={`make-${optionIdx}`}
+                          checked={option.value === selectedFilters.make}
+                          name="make"
+                          type="radio"
                           className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={handleFilterChange}
                         />
-                        <label htmlFor={`price-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600">
+                        <label
+                          htmlFor={`make-${optionIdx}`}
+                          className="ml-3 min-w-0 flex-1 text-gray-600"
+                        >
                           {option.label}
                         </label>
                       </div>
@@ -167,51 +234,118 @@ console.log(selectedFilters);
                 </fieldset>
               </div>
               <div className="grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6">
+                <fieldset>
+                  <legend className="block font-medium">Driving Mode</legend>
+                  <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
+                    {filters.drivingMode.map((option, optionIdx) => (
+                      <div
+                        key={option.value}
+                        className="flex items-center text-base sm:text-sm"
+                      >
+                        <input
+                          defaultValue={option.value}
+                          id={`drivingMode-${optionIdx}`}
+                          checked={option.value === selectedFilters.drivingMode}
+                          name="drivingMode"
+                          type="radio"
+                          className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={handleFilterChange}
+                        />
+                        <label
+                          htmlFor={`drivingMode-${optionIdx}`}
+                          className="ml-3 min-w-0 flex-1 text-gray-600"
+                        >
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset>
+                  <legend className="block font-medium">Fuel Type</legend>
+                  <div className="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
+                    {filters.fuelType.map((option, optionIdx) => (
+                      <div
+                        key={option.value}
+                        className="flex items-center text-base sm:text-sm"
+                      >
+                        <input
+                          defaultValue={option.value}
+                          id={`fuelType-${optionIdx}`}
+                          checked={option.value === selectedFilters.fuelType}
+                          name="fuelType"
+                          type="radio"
+                          className="size-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onChange={handleFilterChange}
+                        />
+                        <label
+                          htmlFor={`fuelType-${optionIdx}`}
+                          className="ml-3 min-w-0 flex-1 text-gray-600"
+                        >
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
               </div>
             </div>
+            <button
+              onClick={appyFilterHandler}
+              style={{ margin: "2rem 0 0 8rem " }}
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Apply Filters
+            </button>
           </DisclosurePanel>
-          <div className="col-start-1 row-start-1 py-4">
-          </div>
         </Disclosure>
 
         {/* Product grid */}
-        <section aria-labelledby="products-heading" className="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
+        <section
+          aria-labelledby="products-heading"
+          className="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8"
+        >
           <h2 id="products-heading" className="sr-only">
             Products
           </h2>
 
           <div className="-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
-            {products.map((product) => (
-              <div key={product.id} className="group relative border-b border-r border-gray-200 p-4 sm:p-6">
+            {cars.map((product) => (
+              <div
+                key={product.id}
+                className="group relative border-b border-r border-gray-200 p-4 sm:p-6"
+              >
                 <img
-                  alt={product.imageAlt}
-                  src={product.imageSrc}
+                  alt={"img"}
+                  src="/img1.jpg"
                   className="aspect-square rounded-lg bg-gray-200 object-cover group-hover:opacity-75"
                 />
                 <div className="pb-4 pt-10 text-center">
                   <h3 className="text-sm font-medium text-gray-900">
-                    <Link to={product.href}>
+                    <Link to={`details/${product.id}`}>
                       <span aria-hidden="true" className="absolute inset-0" />
-                      {product.name}
+                      {product.title}
                     </Link>
                   </h3>
                   <div className="mt-3 flex flex-col items-center">
-                    <p className="sr-only">{product.rating} out of 5 stars</p>
+                    <p className="sr-only">4 out of 5 stars</p>
                     <div className="flex items-center">
                       {[0, 1, 2, 3, 4].map((rating) => (
                         <StarIcon
                           key={rating}
                           aria-hidden="true"
                           className={classNames(
-                            product.rating > rating ? 'text-yellow-400' : 'text-gray-200',
-                            'size-5 shrink-0',
+                            4 > rating ? "text-yellow-400" : "text-gray-200",
+                            "size-5 shrink-0"
                           )}
                         />
                       ))}
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">{product.reviewCount} reviews</p>
+                    <p className="mt-1 text-sm text-gray-500">10 reviews</p>
                   </div>
-                  <p className="mt-4 text-base font-medium text-gray-900">{product.price}</p>
+                  <p className="mt-4 text-base font-medium text-gray-900">
+                    {product.price}
+                  </p>
                 </div>
               </div>
             ))}
@@ -219,5 +353,5 @@ console.log(selectedFilters);
         </section>
       </main>
     </div>
-  )
+  );
 }

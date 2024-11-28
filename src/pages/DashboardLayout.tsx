@@ -22,6 +22,7 @@ import Listings from "../components/Listings";
 import CarDetails from "../components/CarDetails";
 import Home from "./Home";
 import AddCar from "./AddCar";
+import UpdateCar from "./UpdateCar";
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
   {
@@ -214,8 +215,9 @@ const DashboardLayout: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/addcar" element={<AddCar />} />
-                <Route path="details" element={<CarDetails />} />
+                <Route path="details/:id" element={<CarDetails />} />
                 <Route path="mylistings" element={<Listings />} />
+                <Route path="mylistings/update/:id" element={<UpdateCar />} />
                 {/* <Route path="profile" element={<Profile />} /> */}
               </Routes>
             </div>

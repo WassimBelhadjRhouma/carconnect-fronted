@@ -1,78 +1,74 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService"; // Import API service
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { LoginRequest, LoginResponse, SignUpRequest } from "../types/api";
 import axios, { AxiosError } from "axios";
 const SignIn: React.FC = () => {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [confirmPassword, setConfirmPassword] = useState<string>("");
-    const [error, setError] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-    const [formData, setFormData] = useState<SignUpRequest>({
-      email: "",
-      password: "",
-      confirmPassword: ""
-    });
-    const navigate = useNavigate();
+  const [formData, setFormData] = useState<SignUpRequest>({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const navigate = useNavigate();
 
-
-  const handleChange = (event:any) => {
-    setError('')
-    const { name, value } = event.target; 
+  const handleChange = (event: any) => {
+    setError("");
+    const { name, value } = event.target;
     setFormData((prevData) => ({
-      ...prevData, 
-      [name]: value, 
+      ...prevData,
+      [name]: value,
     }));
   };
 
   const validatePassword = (password, confirmPassword) => {
     if (confirmPassword && password !== confirmPassword) {
-      return false
+      return false;
     } else {
-      return true
+      return true;
     }
   };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-      e.preventDefault(); 
-  
-      const requestData: SignUpRequest = formData;
-      if(!validatePassword(formData.password, formData.confirmPassword)){
-        setError("Passwords do not match.")
-        return
-      }
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
 
-      axios
-      .post("/api/users", {email:requestData.email, password: requestData.password, userName: "wassim bhr", role:'renter', status:"unverified"}, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const requestData: SignUpRequest = formData;
+    if (!validatePassword(formData.password, formData.confirmPassword)) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    axios
+      .post("/api/users", {
+        email: requestData.email,
+        password: requestData.password,
+        firstName: "test",
+        lastName: "test",
       })
       .then((response) => {
-        // Handle success
-        console.log("Response data:", response.data);
-    
-        // Save token to localStorage
-        localStorage.setItem("authToken", response.data.token);
-    
         // Navigate to the dashboard
         navigate("/signin");
       })
       .catch((err) => {
         console.log(err);
-        
+
         // Handle error
         const errorMessage =
-          err.response?.data?.message || "Login failed. Please try again.";
+          err.response?.data?.message || "sign up. Please try again.";
         console.error("Error during login:", errorMessage);
-    
+
         // Set error message
         setError(errorMessage);
       });
-    };
-   return (
+  };
+  return (
     <>
       {/*
         This example requires updating your template:
@@ -83,27 +79,26 @@ const SignIn: React.FC = () => {
         ```
       */}
       <div className="flex min-h-full h-screen flex-1">
-        
-        <div  className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <p
-                className="flex logo"
-              >CarConnect.</p>    
+        <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <p className="flex logo">CarConnect.</p>
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-            
-              <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">Ready to drive or share? </h2>
-              <p className="mt-2 text-sm/6 text-gray-500">
-              Sign up now!
-              </p>
+              <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">
+                Ready to drive or share?{" "}
+              </h2>
+              <p className="mt-2 text-sm/6 text-gray-500">Sign up now!</p>
             </div>
 
             <div className="mt-10">
               <div>
-                <form onSubmit={handleSubmit}  className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <p className="text-red-500">{error}</p>
-                
+
                   <div>
-                    <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Email address
                     </label>
                     <div className="mt-2">
@@ -121,7 +116,10 @@ const SignIn: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Password
                     </label>
                     <div className="mt-2">
@@ -139,7 +137,10 @@ const SignIn: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="confirmPassword" className="block text-sm/6 font-medium text-gray-900">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
                       Confirm Password
                     </label>
                     <div className="mt-2">
@@ -164,15 +165,17 @@ const SignIn: React.FC = () => {
                       Sign up
                     </button>
                     <p className="mt-2 text-sm/6 text-gray-500">
-                    Already have an account?{' '}
-                <Link to='/signin' className="font-semibold text-indigo-600 hover:text-indigo-500">
-                  sign in
-                </Link>
-              </p>
+                      Already have an account?{" "}
+                      <Link
+                        to="/signin"
+                        className="font-semibold text-indigo-600 hover:text-indigo-500"
+                      >
+                        sign in
+                      </Link>
+                    </p>
                   </div>
                 </form>
               </div>
-
             </div>
           </div>
         </div>
@@ -185,7 +188,7 @@ const SignIn: React.FC = () => {
         </div>
       </div>
     </>
-  )
+  );
 };
 
 export default SignIn;

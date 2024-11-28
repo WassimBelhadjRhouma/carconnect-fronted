@@ -1,14 +1,14 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 
 const Logo: React.FC = () => {
- 
-  
+  const navigate = useNavigate();
+
   return (
-    <p
-className="flex logo"
->CarConnect.</p>  
+    <p onClick={() => navigate("/")} className="flex cursor-pointer logo">
+      CarConnect.
+    </p>
   );
 };
 
-export default Logo;  
+export default Logo;

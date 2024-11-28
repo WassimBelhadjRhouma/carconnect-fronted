@@ -129,7 +129,7 @@ export default function App() {
     <div className="">
       {viewModal && (
         <Modal
-          textButton="saass"
+          textButton="Done"
           title="Car added successfully"
           content="Our team will now review your listing. We will notify you as soon as there are any updates. In the meantime, you can track the status of your listings on the 'My Listings' page."
           navigateTo="/dashboard/mylistings"

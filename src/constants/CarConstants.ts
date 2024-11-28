@@ -5,7 +5,7 @@ export const carBrands = [
   // { id: 3, name: "Aston Martin" },
   // { id: 4, name: "Audi" },
   // { id: 5, name: "Bentley" },
-  { id: 6, name: "BMW" },
+  { id: 6, name: "Bmw" },
   // { id: 7, name: "BYD" },
   // { id: 8, name: "Chery" },
   // { id: 9, name: "Chevrolet" },
