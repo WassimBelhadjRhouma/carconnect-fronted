@@ -28,7 +28,7 @@ const SignIn: React.FC = () => {
     const requestData: LoginRequest = formData;
 
     axios
-      .post("/api/auth/login", requestData, {
+      .post("https://localhost:8443/api/auth/login", requestData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -37,6 +37,8 @@ const SignIn: React.FC = () => {
         console.log("token:", response.data.token);
 
         localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("userId", response.data.userId);
+        console.log(response.data);
 
         navigate("/dashboard");
       })

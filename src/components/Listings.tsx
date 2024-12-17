@@ -11,7 +11,7 @@ export default function Listings() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    CarService.getCars({})
+    CarService.getCarByUSerId()
       .then((res) => {
         setCars(res.data);
       })

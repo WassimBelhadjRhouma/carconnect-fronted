@@ -1,5 +1,9 @@
 import classNames from "classnames";
-import { HomeIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  BookOpenIcon,
+  HomeIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +13,16 @@ const navigation = [
     name: "Listings",
     href: "/dashboard/mylistings",
     icon: PencilSquareIcon,
+  },
+  {
+    name: "My Bookings Requests",
+    href: "/dashboard/bookings",
+    icon: BookOpenIcon,
+  },
+  {
+    name: "Incoming requests",
+    href: "/dashboard/bookings",
+    icon: BookOpenIcon,
   },
 ];
 

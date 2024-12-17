@@ -19,11 +19,12 @@ import {
 } from "@heroicons/react/24/outline";
 import Logo from "../components/Logo";
 import Listings from "../components/Listings";
-import CarDetails from "../components/CarDetails";
+import CarDetails from "./CarDetails";
 import Home from "./Home";
 import AddCar from "./AddCar";
 import UpdateCar from "./UpdateCar";
 import Navbar from "../components/Navbar";
+import Bookings from "./Bookings";
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
   {
@@ -129,6 +130,7 @@ const DashboardLayout: React.FC = () => {
                 <Route path="/addcar" element={<AddCar />} />
                 <Route path="details/:id" element={<CarDetails />} />
                 <Route path="mylistings" element={<Listings />} />
+                <Route path="bookings" element={<Bookings />} />
                 <Route path="mylistings/update/:id" element={<UpdateCar />} />
                 {/* <Route path="profile" element={<Profile />} /> */}
               </Routes>
