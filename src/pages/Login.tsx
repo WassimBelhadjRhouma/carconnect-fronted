@@ -2,28 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService"; // Import API service
 import { Link } from "react-router-dom";
-import {SignUpRequest } from "../types/api";
+import {LoginRequest } from "../types/api";
 import { useForm  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignupSchema } from "../utils/validation/SignupSchema";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
+import { LoginSchema } from "../utils/validation/LoginSchema";
 
-
-const SignUp: React.FC = () => {
+const SignIn: React.FC = () => {
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<SignUpRequest>({
-    resolver: zodResolver(SignupSchema),
+  } = useForm<LoginRequest>({
+    resolver: zodResolver(LoginSchema),
     mode: "onChange", // for real-time validation
   });
 
-  const onSubmit = (data: SignUpRequest) => {
+  const onSubmit = (data: LoginRequest) => {
     console.log("Form Data:", data);
   };
+
 
   return (
     <>
@@ -33,17 +33,19 @@ const SignUp: React.FC = () => {
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
               <h2 className="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900">
-                Ready to drive or share?{" "}
+                Hi there!
               </h2>
-              <p className="mt-2 text-sm/6 text-gray-500">Sign up now!</p>
+              <p className="mt-2 text-sm/6 text-gray-500">
+                Welcome to your carconnect
+              </p>
             </div>
 
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <AuthenticationInput register={register} name="email" label="Email Address" type="email" error={errors.email}/>
-                  <AuthenticationInput register={register} name="password" label="Password" type="password" error={errors.password}/>
-                  <AuthenticationInput register={register} name="confirmPassword" label="Confirm Password" type="password" error={errors.confirmPassword}/>
+                <AuthenticationInput register={register} name="email" label="Email Address" type="email" error={errors.email}/>
+                <AuthenticationInput register={register} name="password" label="Password" type="password" error={errors.password}/>
+
                   <div>
                     <button
                       type="submit"
@@ -54,15 +56,15 @@ const SignUp: React.FC = () => {
                           : buttonStyles.invalid
                       }`}
                     >
-                      Sign up
+                      Sign in
                     </button>
                     <p className="mt-2 text-sm/6 text-gray-500">
-                      Already have an account?{" "}
+                      Don’t have an account?{" "}
                       <Link
-                        to="/signin"
+                        to="/signup"
                         className="font-semibold text-indigo-600 hover:text-indigo-500"
                       >
-                        sign in
+                        sign up
                       </Link>
                     </p>
                   </div>
@@ -83,4 +85,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;
