@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService"; // Import API service
 import { Link } from "react-router-dom";
@@ -8,9 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
 import { LoginSchema } from "../utils/validation/LoginSchema";
+import LoaderSpinner from "../components/LoaderSpinner";
 
 const SignIn: React.FC = () => {
 
+  const [isLoading, setIsLoading] = useState(false)
   const {
     register,
     handleSubmit,
@@ -21,9 +23,9 @@ const SignIn: React.FC = () => {
   });
 
   const onSubmit = (data: LoginRequest) => {
+    setIsLoading(true)
     console.log("Form Data:", data);
   };
-
 
   return (
     <>
@@ -39,25 +41,25 @@ const SignIn: React.FC = () => {
                 Welcome to your carconnect
               </p>
             </div>
-
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <AuthenticationInput register={register} name="email" label="Email Address" type="email" error={errors.email}/>
-                <AuthenticationInput register={register} name="password" label="Password" type="password" error={errors.password}/>
+                <AuthenticationInput disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>
+                <AuthenticationInput disabled={isLoading} register={register} name="password" label="Password" type="password" error={errors.password}/>
 
                   <div>
                     <button
                       type="submit"
-                      disabled={!isValid}
+                      disabled={!isValid || isLoading}
                       className={` ${buttonStyles.base} ${
-                        isValid
-                          ? buttonStyles.valid
-                          : buttonStyles.invalid
+                        !isValid || isLoading
+                          ? buttonStyles.invalid
+                          : buttonStyles.valid
                       }`}
                     >
-                      Sign in
+                      {isLoading? <LoaderSpinner /> : 'Sign in'}
                     </button>
+
                     <p className="mt-2 text-sm/6 text-gray-500">
                       Don’t have an account?{" "}
                       <Link

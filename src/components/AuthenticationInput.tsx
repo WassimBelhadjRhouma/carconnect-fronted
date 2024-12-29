@@ -1,6 +1,6 @@
 import { inputStyles } from "../utils/style/validationFormStyles";
 
-const AuthenticationInput = ({ register,label ,name, error, type }) => {
+const AuthenticationInput = ({disabled, register,label ,name, error, type }) => {
   return (
     <div>
                     <label
@@ -11,6 +11,7 @@ const AuthenticationInput = ({ register,label ,name, error, type }) => {
                     </label>
                     <div className="mt-2">
                       <input
+                      disabled={disabled}
                         id={name}
                         name= {name}
                         type={type}
