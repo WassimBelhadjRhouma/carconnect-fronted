@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../services/authService"; // Import API service
 import { Link } from "react-router-dom";
 import {LoginRequest } from "../types/api";
 import { useForm  } from "react-hook-form";
