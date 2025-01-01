@@ -1,30 +1,44 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../services/authService"; // Import API service
 import { Link } from "react-router-dom";
-import {SignUpRequest } from "../types/api";
+import {SignUpForm, SignUpUserData } from "../types/api";
 import { useForm  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupSchema } from "../utils/validation/SignupSchema";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
 import LoaderSpinner from "../components/LoaderSpinner";
+import { authService } from "../services/authService";
+import { CustomResponse } from "../utils/ErrorHandler";
+import ErrorBox, { statusEnum } from "../components/ResponseBox";
 
 
 const SignUp: React.FC = () => {
+
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false)
+  const [apiResponse, setApiResponse] = useState<null | CustomResponse>(null)
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<SignUpRequest>({
+  } = useForm<SignUpForm>({
     resolver: zodResolver(SignupSchema),
     mode: "onChange", // for real-time validation
   });
 
-  const onSubmit = (data: SignUpRequest) => {
-    setIsLoading(true)
-    console.log("Form Data:", data);
+  const onSubmit = (data: SignUpForm) => {
+    setIsLoading(true);
+    const dataTransform: SignUpUserData = {email:data.email, password: data.password , firstName: "Wass2",
+    lastName: "bhr",}
+console.log(data);
+
+    authService.registerUser({...dataTransform}).then((res) => {
+      console.log(res)
+      setApiResponse({message: "Account created successfully", status:201})
+    }).catch((err) => {      
+      setApiResponse(err)
+    }).finally(() => setIsLoading(false));
   };
 
   return (
@@ -43,6 +57,9 @@ const SignUp: React.FC = () => {
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                   {apiResponse &&  <ErrorBox title={apiResponse.message} 
+                   buttonContent={apiResponse.status === 201? {title: "Sign In", onClick: () => navigate('/signin')} : null} 
+                   status={ apiResponse.status === 201? statusEnum.Success : statusEnum.Error}/>}
                   <AuthenticationInput disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>
                   <AuthenticationInput disabled={isLoading}  register={register} name="password" label="Password" type="password" error={errors.password}/>
                   <AuthenticationInput disabled={isLoading} register={register} name="confirmPassword" label="Confirm Password" type="password" error={errors.confirmPassword}/>

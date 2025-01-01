@@ -17,7 +17,7 @@ import {
 } from "../constants/CarConstants";
 import CarService from "../services/carService";
 import Modal from "../components/Modal";
-import ErrorBox from "../components/ErrorBox";
+import ErrorBox, { statusEnum } from "../components/ResponseBox";
 import { title } from "process";
 
 // register: Registers input fields and connects them to React Hook Form.
@@ -144,6 +144,7 @@ export default function App() {
       <form className="px-9 py-3 bg-slate-50	">
         {errorDetails.show && (
           <ErrorBox
+          status={statusEnum.Error}
             title={errorDetails.errorTitle}
             errorList={errorDetails.errorList}
           />

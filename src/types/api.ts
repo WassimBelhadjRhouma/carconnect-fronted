@@ -3,15 +3,21 @@ export interface LoginRequest {
     email: string;
     password: string;
   }
-  
-export interface SignUpRequest {
+
+export interface SignUpUserData {
     email: string;
     password: string;
-    confirmPassword: string;
+    firstName: string;
+    lastName: string;
   }
+
+    
+export interface SignUpForm extends SignUpUserData{
+  confirmPassword: string;
+}
 
   
   export interface LoginResponse {
-    token: string; // You can add more fields if your API returns them (e.g., user details)
+    token: string;
   }
   
