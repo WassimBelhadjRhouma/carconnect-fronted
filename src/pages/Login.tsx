@@ -1,31 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {LoginRequest } from "../types/api";
+import {LoginUserData } from "../types/api";
 import { useForm  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
 import { LoginSchema } from "../utils/validation/LoginSchema";
 import LoaderSpinner from "../components/LoaderSpinner";
+import { CustomResponse } from "../utils/ErrorHandler";
+import { authService } from "../services/authService";
+import ResponseBox, { statusEnum } from "../components/ResponseBox";
 
 const SignIn: React.FC = () => {
 
+ const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false)
+  const [apiResponse, setApiResponse] = useState<null | CustomResponse>(null)
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<LoginRequest>({
+  } = useForm<LoginUserData>({
     resolver: zodResolver(LoginSchema),
     mode: "onChange", // for real-time validation
   });
 
-  const onSubmit = (data: LoginRequest) => {
-    setIsLoading(true)
-    console.log("Form Data:", data);
-  };
+  const onSubmit = (data: LoginUserData) => {
+    setIsLoading(true);
 
+    authService.logInUser(data).then((res) => {
+      console.log(res)
+      setApiResponse({message: "Login successfully", status:200})
+    }).catch((err) => {      
+      setApiResponse(err)
+    }).finally(() => setIsLoading(false));
+  };
   return (
     <>
       <div className="flex min-h-full h-screen flex-1">
@@ -43,6 +53,9 @@ const SignIn: React.FC = () => {
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                {apiResponse &&  <ResponseBox title={apiResponse.message} 
+                   buttonContent={apiResponse.status === 200? {title: "Sign In", onClick: () => navigate('/signin')} : null} 
+                   status={ apiResponse.status === 200? statusEnum.Success : statusEnum.Error}/>}
                 <AuthenticationInput disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>
                 <AuthenticationInput disabled={isLoading} register={register} name="password" label="Password" type="password" error={errors.password}/>
 
