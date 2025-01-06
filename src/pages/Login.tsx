@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {LoginUserData } from "../types/api";
+import {LoginUserData } from "../interfaces/AuthInterfaces";
 import { useForm  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
-import { LoginSchema } from "../utils/validation/LoginSchema";
+import { LoginSchema } from "../schemas/LoginSchema";
 import LoaderSpinner from "../components/LoaderSpinner";
 import { CustomResponse } from "../utils/ErrorHandler";
-import { authService } from "../services/authService";
 import ResponseBox, { statusEnum } from "../components/ResponseBox";
+import { useAuth } from "../hooks/useAuth";
 
 const SignIn: React.FC = () => {
+  const { user, login, token } = useAuth(); // Access values and functions provided by the hook
 
  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false)
@@ -26,16 +27,22 @@ const SignIn: React.FC = () => {
     mode: "onChange", // for real-time validation
   });
 
-  const onSubmit = (data: LoginUserData) => {
+  const onSubmit = async (data: LoginUserData) => {
     setIsLoading(true);
-
-    authService.logInUser(data).then((res) => {
-      console.log(res)
-      setApiResponse({message: "Login successfully", status:200})
-    }).catch((err) => {      
+    try{
+      await login(data)
+      navigate("/dashboard")
+      // setApiResponse({message: "Login successfully", status:200})
+      
+    }catch (err) {
       setApiResponse(err)
-    }).finally(() => setIsLoading(false));
+    }
+    finally {
+      setIsLoading(false)
+    }
   };
+  
+  console.log("user data is:", user, token);
   return (
     <>
       <div className="flex min-h-full h-screen flex-1">

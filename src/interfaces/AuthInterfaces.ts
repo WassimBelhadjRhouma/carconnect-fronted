@@ -1,5 +1,7 @@
 // types/api.ts
 
+import { User } from "./UserInterfaces";
+
 export interface SignUpUserData {
     email: string;
     password: string;
@@ -15,6 +17,7 @@ export interface SignUpForm extends SignUpUserData{
   
   export interface LoginResponse {
     token: string;
+    user: User;
   }
   
 

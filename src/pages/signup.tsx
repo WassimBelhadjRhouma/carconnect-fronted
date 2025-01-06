@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {SignUpForm, SignUpUserData } from "../types/api";
+import {SignUpForm, SignUpUserData } from "../interfaces/AuthInterfaces";
 import { useForm  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignupSchema } from "../utils/validation/SignupSchema";
+import { SignupSchema } from "../schemas/SignupSchema";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
 import LoaderSpinner from "../components/LoaderSpinner";
