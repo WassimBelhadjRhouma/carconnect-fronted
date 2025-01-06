@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {SignUpForm, SignUpUserData } from "../types/api";
+import {SignUpForm, SignUpUserData } from "../interfaces/AuthInterfaces";
 import { useForm  } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignupSchema } from "../utils/validation/SignupSchema";
+import { SignupSchema } from "../schemas/SignupSchema";
 import { buttonStyles } from "../utils/style/validationFormStyles";
 import AuthenticationInput from "../components/AuthenticationInput";
 import LoaderSpinner from "../components/LoaderSpinner";
 import { authService } from "../services/authService";
 import { CustomResponse } from "../utils/ErrorHandler";
-import ErrorBox, { statusEnum } from "../components/ResponseBox";
-
+import ResponseBox, { statusEnum } from "../components/ResponseBox";
 
 const SignUp: React.FC = () => {
 
@@ -31,7 +30,6 @@ const SignUp: React.FC = () => {
     setIsLoading(true);
     const dataTransform: SignUpUserData = {email:data.email, password: data.password , firstName: "Wass2",
     lastName: "bhr",}
-console.log(data);
 
     authService.registerUser({...dataTransform}).then((res) => {
       console.log(res)
@@ -57,7 +55,7 @@ console.log(data);
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                   {apiResponse &&  <ErrorBox title={apiResponse.message} 
+                   {apiResponse &&  <ResponseBox title={apiResponse.message} 
                    buttonContent={apiResponse.status === 201? {title: "Sign In", onClick: () => navigate('/signin')} : null} 
                    status={ apiResponse.status === 201? statusEnum.Success : statusEnum.Error}/>}
                   <AuthenticationInput disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>

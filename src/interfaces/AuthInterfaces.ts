@@ -1,8 +1,6 @@
 // types/api.ts
-export interface LoginRequest {
-    email: string;
-    password: string;
-  }
+
+import { User } from "./UserInterfaces";
 
 export interface SignUpUserData {
     email: string;
@@ -19,5 +17,11 @@ export interface SignUpForm extends SignUpUserData{
   
   export interface LoginResponse {
     token: string;
+    user: User;
   }
   
+
+  export interface LoginUserData {
+    email: string;
+    password: string;
+  }

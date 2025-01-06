@@ -5,7 +5,7 @@ export const handleApiError = (error: any): CustomResponse => {
       case 400:
         return {message: "Invalid input. Please check your data.", status};
       case 401:
-        return {message: "Unauthorized. Please log in.", status};
+        return {message: "The email or password you entered is incorrect. Please try again.", status};
       case 403:
         return {message:"You don't have permission to perform this action.", status};
       case 404:

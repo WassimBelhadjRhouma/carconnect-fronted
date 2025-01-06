@@ -8,20 +8,20 @@ import {
 import SignUp from "./pages/signup";
 import SignIn from "./pages/Login";
 import DashboardLayout from "./pages/DashboardLayout";
-import AddCar from "./pages/AddCar";
-import Calendar from "./pages/Calendar";
-import Bookings from "./pages/Bookings";
+import { AuthProvider } from "./context/AuthContext";
+
 
 const App: React.FC = () => (
+  <AuthProvider>
   <Router>
     <Routes>
       <Route path="/" element={<Navigate to="/signin" />} />
-      <Route path="/" element={<SignIn />} />
       <Route path="/dashboard/*" element={<DashboardLayout />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<SignIn />} />
     </Routes>
   </Router>
+  </AuthProvider>
 );
 
 export default App;
