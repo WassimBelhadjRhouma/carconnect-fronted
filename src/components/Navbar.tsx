@@ -4,8 +4,9 @@ import {
   HomeIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
@@ -28,6 +29,7 @@ const navigation = [
 
 export default function Navbar() {
   const [current, setCurrent] = useState("Home");
+  const {logout} = useAuth()
 
   return (
     <nav className="flex flex-1 flex-col">
@@ -62,6 +64,7 @@ export default function Navbar() {
           </ul>
         </li>
       </ul>
+      <button onClick={logout}>logout</button>
     </nav>
   );
 }

@@ -12,7 +12,7 @@ import { CustomResponse } from "../utils/ErrorHandler";
 import ResponseBox, { statusEnum } from "../components/ResponseBox";
 import { useAuth } from "../hooks/useAuth";
 
-const SignIn: React.FC = () => {
+const Login: React.FC = () => {
   const { user, login, token } = useAuth(); // Access values and functions provided by the hook
 
  const navigate = useNavigate();
@@ -106,4 +106,4 @@ const SignIn: React.FC = () => {
   );
 };
 
-export default SignIn;
+export default Login;

@@ -13,13 +13,14 @@ export interface AuthContextProps {
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(null); // Token stored in memory
+  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem("authToken")); // Token stored in memory
   const [user, setUser] = useState<any | null>(null); // Replace with your user model
 
   const login = async (data: LoginUserData) => {
     try {
       const { token, user } = await authService.logInUser(data);
       setToken(token);
+      sessionStorage.setItem("authToken", token)
       setUser(user); 
     } catch (error) {
       throw error; // the component handle the error
@@ -27,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    sessionStorage.removeItem("authToken");
     setToken(null);
     setUser(null);
   };

@@ -9,17 +9,19 @@ import SignUp from "./pages/signup";
 import SignIn from "./pages/Login";
 import DashboardLayout from "./pages/DashboardLayout";
 import { AuthProvider } from "./context/AuthContext";
+import AppRoutes from "./routes/AppRoutes";
 
 
 const App: React.FC = () => (
   <AuthProvider>
   <Router>
-    <Routes>
+    <AppRoutes></AppRoutes>
+    {/* <Routes>
       <Route path="/" element={<Navigate to="/signin" />} />
       <Route path="/dashboard/*" element={<DashboardLayout />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<SignIn />} />
-    </Routes>
+    </Routes> */}
   </Router>
   </AuthProvider>
 );
