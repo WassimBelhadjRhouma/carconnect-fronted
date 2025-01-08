@@ -1,13 +1,13 @@
 import { inputStyles } from "../utils/style/validationFormStyles";
 
-const AuthenticationInput = ({disabled, register,label ,name, error, type }) => {
+const AuthenticationInput = ({disabled, labelText, register,label ,name, error, type }) => {
   return (
     <div>
                     <label
-                      htmlFor="password"
+                      htmlFor={label}
                       className="block text-sm/6 font-medium text-gray-900"
                     >
-                      {label}
+                      {labelText}
                     </label>
                     <div className="mt-2">
                       <input

@@ -63,8 +63,8 @@ const Login: React.FC = () => {
                 {apiResponse &&  <ResponseBox title={apiResponse.message} 
                    buttonContent={apiResponse.status === 200? {title: "Sign In", onClick: () => navigate('/signin')} : null} 
                    status={ apiResponse.status === 200? statusEnum.Success : statusEnum.Error}/>}
-                <AuthenticationInput disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>
-                <AuthenticationInput disabled={isLoading} register={register} name="password" label="Password" type="password" error={errors.password}/>
+                <AuthenticationInput labelText="Email Address" disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>
+                <AuthenticationInput labelText="Password" disabled={isLoading} register={register} name="password" label="Password" type="password" error={errors.password}/>
 
                   <div>
                     <button

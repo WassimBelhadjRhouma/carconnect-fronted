@@ -1,26 +1,38 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { ApiClient } from "./apiClient";
 
-const API_BASE_URL = "https://localhost:8443/api/cars";
-const token = localStorage.getItem("authToken");
-const userId = localStorage.getItem("userId");
+const userId = sessionStorage.getItem("userId");
 
-if (token) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
+const pathURL = "/cars";
+const apiClient = ApiClient(pathURL);
+
 const CarService = {
   addCar: (carData) => {
-    return axios.post(API_BASE_URL, { ...carData, owner: { id: userId } });
+    return axios.post({ ...carData, owner: { id: userId } });
   },
-  getCars: (filter) => axios.post(API_BASE_URL + "/filter", filter), // we used POST because we have the intention to use more advanced filter options, which will be complicated to pass all of them in params.
+  getCars: async (filter): Promise<AxiosResponse<any>[]> => {
+    try {
+      const response = await apiClient.post("/filter", filter); // we used POST because we have the intention to use more advanced filter options, which will be complicated to pass all of them in params.
+      return response.data;
+    } catch (error) {
+      console.log(error);
 
-  getCar: (id) => axios.get(API_BASE_URL + `/${id}`),
+      throw new Error(error);
+    }
+  },
+  getCar: async (id): Promise<AxiosResponse<any>> => {
+    try {
+      const response = await axios.get(`/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
 
-  getCarByUSerId: () => axios.get(API_BASE_URL + `/user/${userId}`),
+  getCarByUSerId: () => axios.get(`/user/${userId}`),
 
-  deleteCar: (carId) =>
-    axios.delete(`${API_BASE_URL}/${carId}`, { params: { userId } }),
-  updateCar: (carId, updates) =>
-    axios.patch(`${API_BASE_URL}/${carId}`, updates),
+  deleteCar: (carId) => axios.delete(`/${carId}`, { params: { userId } }),
+  updateCar: (carId, updates) => axios.patch(`/${carId}`, updates),
 };
 
 export default CarService;

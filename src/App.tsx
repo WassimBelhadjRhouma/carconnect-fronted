@@ -1,28 +1,19 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import SignUp from "./pages/signup";
-import SignIn from "./pages/Login";
-import DashboardLayout from "./pages/DashboardLayout";
+import { BrowserRouter as Router } from "react-router-dom";
+
 import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./routes/AppRoutes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+const queryClient = new QueryClient();
 
 const App: React.FC = () => (
   <AuthProvider>
-  <Router>
-    <AppRoutes></AppRoutes>
-    {/* <Routes>
-      <Route path="/" element={<Navigate to="/signin" />} />
-      <Route path="/dashboard/*" element={<DashboardLayout />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/signin" element={<SignIn />} />
-    </Routes> */}
-  </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <AppRoutes></AppRoutes>
+      </Router>
+    </QueryClientProvider>
   </AuthProvider>
 );
 

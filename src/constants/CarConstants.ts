@@ -1,3 +1,5 @@
+import { DrivingMode, fuelType } from "../interfaces/CarInterfaces";
+
 export const carBrands = [
   { id: 0, name: "Select a brand" },
   // { id: 1, name: "Acura" },
@@ -148,11 +150,6 @@ export const constructionYears = [
   { id: 11, name: "2025" },
 ];
 
-export const drivingModes = [
-  { id: 1, name: "Automatic" },
-  { id: 2, name: "Manuel" },
-];
-
 export const mileageIntervals = [
   { id: 1, name: "0-30,000 km" },
   { id: 2, name: "30,001-60,000 km" },
@@ -162,7 +159,12 @@ export const mileageIntervals = [
 ];
 
 export const fuelTypes = [
-  { id: 1, name: "Petrol (Benzene)" },
-  { id: 2, name: "Electric" },
-  { id: 3, name: "Hybrid" },
+  { id: 1, name: fuelType.petrol },
+  { id: 2, name: fuelType.electric },
+  { id: 3, name: fuelType.hybrid },
+];
+
+export const drivingModes = [
+  { id: 1, name: DrivingMode.automatic },
+  { id: 2, name: DrivingMode.manual },
 ];
