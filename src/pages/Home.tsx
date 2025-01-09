@@ -1,29 +1,22 @@
-import { useEffect, useState } from "react";
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { FunnelIcon, StarIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
+import { StarIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { filters, priceLabels } from "../constants/FilterConstants";
 import CarService from "../services/carService";
-import Filter from "../components/Filter";
+import Filter from "../components/form/Filter";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Example() {
-  const [cars, setCars] = useState([]);
-  const [error, setError] = useState(null);
+  const [selectedFilters, setSelectedFilters] = useState({});
 
-  useEffect(() => {
-    CarService.getCars({})
-      .then((res) => {
-        console.log(res);
-
-        setCars(res);
-      })
-      .catch((err) => setError(err.message));
-  }, []);
+  const {
+    data: cars,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["availableCars", selectedFilters],
+    queryFn: () => CarService.getCars(selectedFilters),
+  });
 
   return (
     <div className="bg-white">
@@ -40,7 +33,7 @@ export default function Example() {
         </div>
 
         {/* Filters */}
-        <Filter />
+        <Filter setSelectedFilters={setSelectedFilters} />
 
         {/* Product grid */}
         <section
@@ -52,7 +45,7 @@ export default function Example() {
           </h2>
 
           <div className="-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
-            {cars.map((product) => (
+            {cars?.map((product) => (
               <div
                 key={product.id}
                 className="group relative border-b border-r border-gray-200 p-4 sm:p-6"

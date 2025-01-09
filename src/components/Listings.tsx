@@ -13,7 +13,7 @@ export default function Listings() {
   useEffect(() => {
     CarService.getCarByUSerId()
       .then((res) => {
-        setCars(res.data);
+        setCars(res);
       })
       .catch((err) => setError(err.message));
   }, []);

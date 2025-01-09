@@ -8,15 +8,12 @@ export const ApiClient = (pathUrl: String) => {
   const apiClient = axios.create({
     baseURL: `${appURL}${pathUrl}`,
   });
-  console.log("this is called");
-
   apiClient.interceptors.request.use(
     (config) => {
       const token = sessionStorage.getItem("authToken");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      console.log("Request Headers:", config.headers); // Debugging
 
       return config;
     },

@@ -11,7 +11,7 @@ interface IFormInputs {
   pricePerDay: number;
 }
 
-interface CarUpdate {
+export interface CarUpdate {
   title: string;
   description: string;
   make: string;
@@ -28,7 +28,7 @@ export default function UpdateCar() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [car, setCar] = useState<CarUpdate>();
+  const [car, setCar] = useState<any>();
   const [openModal, setOpenModal] = useState(false);
 
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
@@ -44,10 +44,7 @@ export default function UpdateCar() {
     CarService.getCar(id)
       .then((res) => {
         console.log(res);
-
-        setCar((oldva) => {
-          return res.data;
-        });
+        setCar(res);
         reset({
           title: res.data.title,
           description: res.data.description,
