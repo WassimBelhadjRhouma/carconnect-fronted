@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import Checkbox from "../components/Checkbox";
+import Checkbox from "../components/form/Checkbox";
 import {
   carBrands,
   carModels,
@@ -17,7 +17,7 @@ import {
 } from "../constants/CarConstants";
 import CarService from "../services/carService";
 import Modal from "../components/Modal";
-import ErrorBox, { statusEnum } from "../components/ResponseBox";
+import ErrorBox, { statusEnum } from "../components/form/ResponseBox";
 import { title } from "process";
 
 // register: Registers input fields and connects them to React Hook Form.
@@ -35,7 +35,7 @@ interface IFormInputs {
   description: string;
   streetAddress: string;
   city: string;
-  postalCode: number;
+  postalCode: string;
   pricePerDay: number;
   licencePlate: string;
 }
@@ -144,7 +144,7 @@ export default function App() {
       <form className="px-9 py-3 bg-slate-50	">
         {errorDetails.show && (
           <ErrorBox
-          status={statusEnum.Error}
+            status={statusEnum.Error}
             title={errorDetails.errorTitle}
             errorList={errorDetails.errorList}
           />

@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {LoginUserData } from "../interfaces/AuthInterfaces";
-import { useForm  } from "react-hook-form";
+import { LoginUserData } from "../interfaces/AuthInterfaces";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { buttonStyles } from "../utils/style/validationFormStyles";
-import AuthenticationInput from "../components/AuthenticationInput";
+import AuthenticationInput from "../components/form/AuthenticationInput";
 import { LoginSchema } from "../schemas/LoginSchema";
 import LoaderSpinner from "../components/LoaderSpinner";
 import { CustomResponse } from "../utils/ErrorHandler";
-import ResponseBox, { statusEnum } from "../components/ResponseBox";
+import ResponseBox, { statusEnum } from "../components/form/ResponseBox";
 import { useAuth } from "../hooks/useAuth";
 
 const Login: React.FC = () => {
   const { user, login, token } = useAuth(); // Access values and functions provided by the hook
 
- const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false)
-  const [apiResponse, setApiResponse] = useState<null | CustomResponse>(null)
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiResponse, setApiResponse] = useState<null | CustomResponse>(null);
   const {
     register,
     handleSubmit,
@@ -29,19 +29,17 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: LoginUserData) => {
     setIsLoading(true);
-    try{
-      await login(data)
-      navigate("/dashboard")
+    try {
+      await login(data);
+      navigate("/dashboard");
       // setApiResponse({message: "Login successfully", status:200})
-      
-    }catch (err) {
-      setApiResponse(err)
-    }
-    finally {
-      setIsLoading(false)
+    } catch (err) {
+      setApiResponse(err);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   console.log("user data is:", user, token);
   return (
     <>
@@ -60,11 +58,42 @@ const Login: React.FC = () => {
             <div className="mt-10">
               <div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {apiResponse &&  <ResponseBox title={apiResponse.message} 
-                   buttonContent={apiResponse.status === 200? {title: "Sign In", onClick: () => navigate('/signin')} : null} 
-                   status={ apiResponse.status === 200? statusEnum.Success : statusEnum.Error}/>}
-                <AuthenticationInput labelText="Email Address" disabled={isLoading} register={register} name="email" label="Email Address" type="email" error={errors.email}/>
-                <AuthenticationInput labelText="Password" disabled={isLoading} register={register} name="password" label="Password" type="password" error={errors.password}/>
+                  {apiResponse && (
+                    <ResponseBox
+                      title={apiResponse.message}
+                      buttonContent={
+                        apiResponse.status === 200
+                          ? {
+                              title: "Sign In",
+                              onClick: () => navigate("/signin"),
+                            }
+                          : null
+                      }
+                      status={
+                        apiResponse.status === 200
+                          ? statusEnum.Success
+                          : statusEnum.Error
+                      }
+                    />
+                  )}
+                  <AuthenticationInput
+                    labelText="Email Address"
+                    disabled={isLoading}
+                    register={register}
+                    name="email"
+                    label="Email Address"
+                    type="email"
+                    error={errors.email}
+                  />
+                  <AuthenticationInput
+                    labelText="Password"
+                    disabled={isLoading}
+                    register={register}
+                    name="password"
+                    label="Password"
+                    type="password"
+                    error={errors.password}
+                  />
 
                   <div>
                     <button
@@ -76,7 +105,7 @@ const Login: React.FC = () => {
                           : buttonStyles.valid
                       }`}
                     >
-                      {isLoading? <LoaderSpinner /> : 'Sign in'}
+                      {isLoading ? <LoaderSpinner /> : "Sign in"}
                     </button>
 
                     <p className="mt-2 text-sm/6 text-gray-500">

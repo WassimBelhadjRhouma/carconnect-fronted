@@ -1,22 +1,22 @@
 export const filters = {
   price: [
-    { value: 0, label: "€0 - €25", checked: false },
-    { value: 25, label: "€25 - €50", checked: false },
-    { value: 50, label: "€50 - €75", checked: false },
-    { value: 75, label: "€75+", checked: false },
+    { value: 0, label: "€0 - €25", type: "checkbox" },
+    { value: 25, label: "€25 - €50", type: "checkbox" },
+    { value: 50, label: "€50 - €75", type: "checkbox" },
+    { value: 75, label: "€75+", type: "checkbox" },
   ],
   make: [
-    { value: "Bmw", label: "Bmw", checked: false },
-    { value: "Mercedes", label: "Mercedes", checked: false },
+    { value: "Bmw", label: "Bmw", type: "radio" },
+    { value: "Mercedes", label: "Mercedes", type: "radio" },
   ],
   drivingMode: [
-    { value: "Automatic", label: "Automatic", checked: false },
-    { value: "Manuel", label: "Manuel", checked: false },
+    { value: "Automatic", label: "Automatic", type: "radio" },
+    { value: "Manuel", label: "Manuel", type: "radio" },
   ],
   fuelType: [
-    { value: "Petrol (Benzene)", label: "Petrol (Benzene)", checked: false },
-    { value: "Electric", label: "Electric", checked: false },
-    { value: "Hybrid", label: "Hybrid", checked: false },
+    { value: "Petrol (Benzene)", label: "Petrol (Benzene)", type: "radio" },
+    { value: "Electric", label: "Electric", type: "radio" },
+    { value: "Hybrid", label: "Hybrid", type: "radio" },
   ],
 };
 
