@@ -16,20 +16,20 @@ const navigation = [
     icon: PencilSquareIcon,
   },
   {
-    name: "My Bookings Requests",
-    href: "/dashboard/bookings",
+    name: "Incoming request",
+    href: "/dashboard/bookings/owner",
     icon: BookOpenIcon,
   },
   {
-    name: "Incoming requests",
-    href: "/dashboard/bookings",
+    name: "My Bookings",
+    href: "/dashboard/bookings/renter",
     icon: BookOpenIcon,
   },
 ];
 
 export default function Navbar() {
   const [current, setCurrent] = useState("Home");
-  const {logout} = useAuth()
+  const { logout } = useAuth();
 
   return (
     <nav className="flex flex-1 flex-col">

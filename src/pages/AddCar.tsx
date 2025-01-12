@@ -1,12 +1,7 @@
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import {
-  CheckIcon,
-  ChevronUpDownIcon,
-  PhotoIcon,
-} from "@heroicons/react/20/solid";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { PhotoIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import Checkbox from "../components/form/Checkbox";
 import {
   carBrands,
   carModels,
@@ -14,21 +9,17 @@ import {
   drivingModes,
   fuelTypes,
   mileageIntervals,
+  selectPhrases,
 } from "../constants/CarConstants";
 import CarService from "../services/carService";
 import Modal from "../components/Modal";
-import ErrorBox, { statusEnum } from "../components/form/ResponseBox";
-import { title } from "process";
-
-// register: Registers input fields and connects them to React Hook Form.
-// formState.errors: Stores validation errors for each field.
-// handleSubmit: Handles the form submission process and validates inputs before passing the data to the submission handler.
-// SubmitHandler<IFormInputs>:
-// The SubmitHandler type defines the shape of the data object passed to the onSubmit function.
-// IFormInputs specifies the structure of the form data
-
-// register connects the firstName and lastName input fields to React Hook Form. It tracks their values and validates them based on the provided rules (e.g., { required: true }).
-// The handleSubmit function from useForm ensures that onSubmit receives the data object containing all the form values.
+import ResponseBox, { statusEnum } from "../components/form/ResponseBox";
+import Checkbox from "../components/form/Checkbox";
+import { buttonStyles, inputStyles } from "../utils/style/validationFormStyles";
+import { AddCarSchema } from "../schemas/CarSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CustomInput from "../components/form/CustomInput";
+import { Car } from "../interfaces/CarInterfaces";
 
 interface IFormInputs {
   title: string;
@@ -36,14 +27,14 @@ interface IFormInputs {
   streetAddress: string;
   city: string;
   postalCode: string;
-  pricePerDay: number;
+  pricePerDay: string;
   licencePlate: string;
+  imageDataList: any[];
 }
-
 export default function App() {
   const navigate = useNavigate();
-  const targetRefScroll = useRef<HTMLDivElement>(null);
 
+  const targetRefScroll = useRef<HTMLDivElement>(null);
   const [selectedDrivingMode, setSelectedDrivingMode] = useState(
     drivingModes[0]
   );
@@ -56,34 +47,66 @@ export default function App() {
     errorList: [],
     errorTitle: "",
   });
+  const [showError, setShowError] = useState(false);
+  const [previewImages, setPreviewImages] = useState([]);
   const [selectedFuel, setSelectedFuel] = useState(fuelTypes[0]);
   const [selectedBrand, setSelectedBrand] = useState(carBrands[0]);
   const [selectedModel, setSelectedModel] = useState(carModels.bmw[0]);
   const [selectedYear, setSelectedYear] = useState(constructionYears[0]);
+  const [isLoading, setIsLoading] = useState(false);
   const [showYear, setShowYear] = useState(false);
   const [modelBehavior, setModelBehavior] = useState({
     show: false,
     models: [],
   });
-
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
-    control,
-  } = useForm<IFormInputs>();
-
+    setValue,
+  } = useForm<IFormInputs>({
+    resolver: zodResolver(AddCarSchema),
+    mode: "onTouched",
+  });
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
-    const allData = {
+    const allData: Car = {
       ...data,
       make: selectedBrand.name,
       model: selectedModel.name,
       drivingMode: selectedDrivingMode.name,
       mileage: selectedMileageInterval.name,
       fuelType: selectedFuel.name,
-      year: selectedYear.name,
+      constructionYear: selectedYear.name,
     };
-    console.log();
+    const errorsDisplay = {
+      show: false,
+      errorList: [],
+      errorTitle: "",
+    };
+    if (selectedBrand.name === selectPhrases.make) {
+      errorsDisplay.errorList.push("Make is required");
+    }
+    if (!modelBehavior.show || selectedModel.name == selectPhrases.model) {
+      errorsDisplay.errorList.push("Model is required");
+    }
+    if (!showYear) {
+      errorsDisplay.errorList.push("Construction year is required");
+    }
+
+    if (errorsDisplay.errorList.length > 0) {
+      setErrorDetails({
+        ...errorsDisplay,
+        errorTitle: "Please Complete All Required Fields",
+        show: true,
+      });
+      targetRefScroll.current.scrollIntoView({ behavior: "smooth" });
+      return;
+    } else {
+      setErrorDetails({
+        ...errorsDisplay,
+      });
+    }
+
     CarService.addCar(allData)
       .then((res) => {
         if (res.status == 200) setViewModal(true);
@@ -103,6 +126,28 @@ export default function App() {
       });
   };
 
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    // Convert files to base64 strings
+    Promise.all(files.map(fileToBase64))
+      .then((base64Images) => {
+        setValue("imageDataList", base64Images, { shouldValidate: true }); // Update the 'images' field in the form
+        setPreviewImages(base64Images); // Set preview for display
+      })
+      .catch((error) => {
+        console.error("Error converting images:", error);
+      });
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   useEffect(() => {
     if (selectedBrand.name !== "Select a brand") {
       const currentModels = carModels[selectedBrand.name.toLowerCase()];
@@ -115,7 +160,6 @@ export default function App() {
       }
     }
   }, [selectedBrand]);
-
   useEffect(() => {
     if (selectedModel.name !== "Select a model") {
       setShowYear(true);
@@ -124,16 +168,22 @@ export default function App() {
       setShowYear(false);
     }
   }, [selectedModel]);
-
   return (
     <div className="">
       {viewModal && (
         <Modal
-          textButton="Done"
+          textButton="Back to my listings page"
           title="Car added successfully"
-          content="Our team will now review your listing. We will notify you as soon as there are any updates. In the meantime, you can track the status of your listings on the 'My Listings' page."
           navigateTo="/dashboard/mylistings"
-        />
+        >
+          <div className="mt-2">
+            <p className="text-sm text-gray-500">
+              Our team will now review your listing. We will notify you as soon
+              as there are any updates. In the meantime, you can track the
+              status of your listings on the 'My Listings' page.
+            </p>
+          </div>
+        </Modal>
       )}
       <h2
         ref={targetRefScroll}
@@ -143,7 +193,7 @@ export default function App() {
       </h2>
       <form className="px-9 py-3 bg-slate-50	">
         {errorDetails.show && (
-          <ErrorBox
+          <ResponseBox
             status={statusEnum.Error}
             title={errorDetails.errorTitle}
             errorList={errorDetails.errorList}
@@ -151,23 +201,17 @@ export default function App() {
         )}
         <div className="space-y-12 grid grid-cols-6 gap-x-6 gap-y-1">
           <div className="sm:col-span-2">
-            <label
-              htmlFor="title"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              Title
-            </label>
-            <div className="mt-2">
-              <input
-                {...register("title", { required: true })}
-                id="title"
-                type="text"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <CustomInput
+              labelText="Title"
+              disabled={isLoading}
+              register={register}
+              name="title"
+              label="Title"
+              type="text"
+              error={errors.title}
+            />
             <div></div>
           </div>
-
           <div className="col-span-3 col-start-1">
             <label
               htmlFor="about"
@@ -181,15 +225,20 @@ export default function App() {
                 id="about"
                 name="description"
                 rows={3}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                className={`${
+                  errors.description ? inputStyles.error : ""
+                } block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
                 defaultValue={""}
               />
             </div>
-            <p className="mt-3 text-sm/6 text-gray-600">
+            <p
+              className={`mt-3 text-sm/6 ${
+                errors.description ? "text-red-600" : "text-gray-600"
+              }`}
+            >
               Write a few sentences about your car.
             </p>
           </div>
-
           {/* make  */}
           <div className="col-start-1">
             <Checkbox
@@ -199,7 +248,6 @@ export default function App() {
               options={carBrands}
             />
           </div>
-
           {/* Model */}
           {modelBehavior.show && (
             <div className="row-start-3 col-start-2">
@@ -211,7 +259,6 @@ export default function App() {
               />
             </div>
           )}
-
           {/* Construction year */}
           {showYear && (
             <div className="row-start-3 col-start-3">
@@ -223,7 +270,6 @@ export default function App() {
               />
             </div>
           )}
-
           {/* //  driving mode */}
           <div className="row-start-4">
             <Checkbox
@@ -233,7 +279,6 @@ export default function App() {
               options={drivingModes}
             />
           </div>
-
           {/* //  Mileage */}
           <div className="row-start-4">
             <Checkbox
@@ -243,7 +288,6 @@ export default function App() {
               options={mileageIntervals}
             />
           </div>
-
           {/* //  Fuel Type */}
           <div className="row-start-4">
             <Checkbox
@@ -253,15 +297,22 @@ export default function App() {
               options={fuelTypes}
             />
           </div>
-
           {/* photos */}
           <div className="col-start-1 col-span-3">
             <label
               htmlFor="cover-photo"
               className="block text-sm/6 font-medium text-gray-900"
             >
-              Car photos
-            </label>
+              Car photos{" "}
+              <span
+                aria-hidden="true"
+                className={`${
+                  errors.imageDataList ? "text-red-500" : "text-gray-900"
+                }`}
+              >
+                *
+              </span>
+            </label>{" "}
             <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
               <div className="text-center">
                 <PhotoIcon
@@ -278,6 +329,9 @@ export default function App() {
                       id="file-upload"
                       name="file-upload"
                       type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileChange}
                       className="sr-only"
                     />
                   </label>
@@ -288,27 +342,35 @@ export default function App() {
                 </p>
               </div>
             </div>
+            {errors.imageDataList && (
+              <p id="images-error" className="mt-2 text-sm text-red-600">
+                At least one image is required
+              </p>
+            )}
           </div>
-
+          <div>
+            {previewImages.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Preview ${index + 1}`}
+                style={{ width: "100px", height: "100px", margin: "10px" }}
+              />
+            ))}
+          </div>
           {/* licence plate */}
           <div className="col-start-1">
-            <label
-              htmlFor="licencePlate"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              Licence plate
-            </label>
-            <div className="mt-2">
-              <input
-                {...register("licencePlate", { required: true })}
-                id="licencePlate"
-                type="text"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <CustomInput
+              labelText="Licence Plate"
+              disabled={isLoading}
+              register={register}
+              name="licencePlate"
+              label="Licence Plate"
+              type="text"
+              error={errors.licencePlate}
+            />
             <div></div>
           </div>
-
           {/* price */}
           <div className="col-start-1">
             <label
@@ -319,7 +381,14 @@ export default function App() {
             </label>
             <div className="relative mt-2 rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500 sm:text-sm">€</span>
+                <span
+                  id="price-currency"
+                  className={`${
+                    errors.pricePerDay ? "text-red-500" : "text-gray-500"
+                  }  sm:text-sm`}
+                >
+                  €
+                </span>
               </div>
               <input
                 {...register("pricePerDay")}
@@ -328,78 +397,71 @@ export default function App() {
                 type="text"
                 placeholder="0.00"
                 aria-describedby="price-currency"
-                className="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                className={`${
+                  errors.pricePerDay ? inputStyles.error : ""
+                }   block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
               />
+
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <span id="price-currency" className="text-gray-500 sm:text-sm">
+                <span
+                  id="price-currency"
+                  className={`${
+                    errors.pricePerDay ? "text-red-500" : "text-gray-500"
+                  }  sm:text-sm`}
+                >
                   EUR
                 </span>
               </div>
             </div>
+            {errors.pricePerDay && (
+              <p id="price-error" className="mt-2 text-sm text-red-600">
+                {errors.pricePerDay.message}
+              </p>
+            )}
           </div>
-
           <div className="col-start-1 col-span-2">
-            <label
-              htmlFor="street-address"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              Street address
-            </label>
-            <div className="mt-2">
-              <input
-                {...register("streetAddress")}
-                id="street-address"
-                name="streetAddress"
-                type="text"
-                autoComplete="address-line1"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <CustomInput
+              labelText="Street Address"
+              disabled={isLoading}
+              register={register}
+              name="streetAddress"
+              label="streetAddress"
+              type="text"
+              error={errors.streetAddress}
+              autoComplete="address-line1"
+            />
           </div>
-
           {/* City */}
           <div className="col-start-1">
-            <label
-              htmlFor="city"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              City
-            </label>
-            <div className="mt-2">
-              <input
-                {...register("city")}
-                id="city"
-                name="city"
-                type="text"
-                autoComplete="address-level2"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <CustomInput
+              labelText="City"
+              disabled={isLoading}
+              register={register}
+              name="city"
+              label="city"
+              type="text"
+              error={errors.city}
+              autoComplete="address-level2"
+            />
           </div>
-
           <div className="">
-            <label
-              htmlFor="postal-code"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              ZIP / Postal code
-            </label>
-            <div className="mt-2">
-              <input
-                {...register("postalCode")}
-                id="postal-code"
-                name="postalCode"
-                type="text"
-                autoComplete="postal-code"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-              />
-            </div>
+            <CustomInput
+              labelText="Postal Code"
+              disabled={isLoading}
+              register={register}
+              name="postalCode"
+              label="postalCode"
+              type="text"
+              error={errors.postalCode}
+              autoComplete="postal-code"
+            />
           </div>
         </div>
         <button
           onClick={handleSubmit(onSubmit)}
           type="button"
-          className="mt-9 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          // disabled={!showYear || !isValid}
+          className={`flex justify-center rounded-md  mt-9 mb-3 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonStyles.valid}`}
         >
           Submit
         </button>

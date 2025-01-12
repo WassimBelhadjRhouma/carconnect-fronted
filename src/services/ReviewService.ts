@@ -4,18 +4,16 @@ import {
   BookingStatus,
   GetBookingsResponse,
 } from "../interfaces/BookingInterfaces";
+import { Review } from "../interfaces/ReviewInterfaces";
 
-const userId = sessionStorage.getItem("userId");
-
-const pathURL = "/bookings";
+const pathURL = "/reviews";
 const apiClient = ApiClient(pathURL);
 
 const BookingService = {
-  addBookingRequest: async (data, carId): Promise<AxiosResponse<any>> => {
+  addReview: async (requestBody: Review): Promise<AxiosResponse<any>> => {
     try {
       const res = await apiClient.post("", {
-        ...data,
-        car: { id: carId },
+        ...requestBody,
       });
       return res;
     } catch (error) {

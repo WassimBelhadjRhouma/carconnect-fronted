@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupSchema } from "../schemas/SignupSchema";
 import { buttonStyles } from "../utils/style/validationFormStyles";
-import AuthenticationInput from "../components/form/AuthenticationInput";
+import CustomInput from "../components/form/CustomInput";
 import LoaderSpinner from "../components/LoaderSpinner";
 import { authService } from "../services/authService";
 import { CustomResponse } from "../utils/ErrorHandler";
@@ -83,7 +83,7 @@ const SignUp: React.FC = () => {
                       }
                     />
                   )}
-                  <AuthenticationInput
+                  <CustomInput
                     labelText={"Email Address"}
                     disabled={isLoading}
                     register={register}
@@ -92,7 +92,7 @@ const SignUp: React.FC = () => {
                     type="email"
                     error={errors.email}
                   />
-                  <AuthenticationInput
+                  <CustomInput
                     disabled={isLoading}
                     labelText="Password"
                     register={register}
@@ -101,7 +101,7 @@ const SignUp: React.FC = () => {
                     type="password"
                     error={errors.password}
                   />
-                  <AuthenticationInput
+                  <CustomInput
                     labelText="Confirm Password"
                     disabled={isLoading}
                     register={register}

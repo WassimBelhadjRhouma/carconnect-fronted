@@ -1,18 +1,20 @@
 export interface Car {
-  id: number;
-  title: string;
-  description: string;
-  make: string;
-  model: string;
-  driving_mode: DrivingMode;
-  fuel_type: fuelType;
-  licence_plate: string;
-  price_per_day: number;
-  mileage: number;
-  postal_code: string;
-  city: string;
-  street_address: string;
-  year: number;
+  id?: number;
+  title?: string;
+  description?: string;
+  make?: string;
+  model?: string;
+  drivingMode?: DrivingMode;
+  fuelType?: fuelType;
+  licencePlate?: string;
+  pricePerDay?: string | number;
+  mileage?: string;
+  postalCode?: string;
+  city?: string;
+  streetAddress?: string;
+  constructionYear?: string;
+  imageDataList?: any[];
+  images?: string[];
 }
 
 export enum DrivingMode {
