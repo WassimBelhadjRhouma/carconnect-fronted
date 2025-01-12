@@ -5,7 +5,7 @@ import { LoginUserData } from "../interfaces/AuthInterfaces";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { buttonStyles } from "../utils/style/validationFormStyles";
-import AuthenticationInput from "../components/form/AuthenticationInput";
+import CustomInput from "../components/form/CustomInput";
 import { LoginSchema } from "../schemas/LoginSchema";
 import LoaderSpinner from "../components/LoaderSpinner";
 import { CustomResponse } from "../utils/ErrorHandler";
@@ -40,7 +40,6 @@ const Login: React.FC = () => {
     }
   };
 
-  console.log("user data is:", user, token);
   return (
     <>
       <div className="flex min-h-full h-screen flex-1">
@@ -76,7 +75,7 @@ const Login: React.FC = () => {
                       }
                     />
                   )}
-                  <AuthenticationInput
+                  <CustomInput
                     labelText="Email Address"
                     disabled={isLoading}
                     register={register}
@@ -85,7 +84,7 @@ const Login: React.FC = () => {
                     type="email"
                     error={errors.email}
                   />
-                  <AuthenticationInput
+                  <CustomInput
                     labelText="Password"
                     disabled={isLoading}
                     register={register}

@@ -15,7 +15,7 @@ interface MyComponentProps {
   navigateTo?: any;
 }
 
-const Modal = ({ title, content, textButton, navigateTo }) => {
+const Modal = ({ title, textButton, navigateTo, children }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
@@ -55,9 +55,7 @@ const Modal = ({ title, content, textButton, navigateTo }) => {
                 >
                   {title}
                 </DialogTitle>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">{content}</p>
-                </div>
+                {children}
               </div>
             </div>
             <div className="mt-5 sm:mt-6">

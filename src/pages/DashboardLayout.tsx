@@ -18,13 +18,14 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import Logo from "../components/Logo";
-import Listings from "../components/Listings";
 import CarDetails from "./CarDetails";
 import Home from "./Home";
 import AddCar from "./AddCar";
 import UpdateCar from "./UpdateCar";
 import Navbar from "../components/Navbar";
-import Bookings from "./Bookings";
+import Listings from "./Listings";
+import OwnerBookings from "./OwnerBookings";
+import RenterBookings from "./RenterBookings";
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
   {
@@ -104,23 +105,9 @@ const DashboardLayout: React.FC = () => {
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon aria-hidden="true" className="size-6" />
             </button>
-
             {/* Separator */}
-            <div
-              aria-hidden="true"
-              style={{ background: "Red" }}
-              className="h-6 w-px bg-gray-200 lg:hidden"
-            />
 
-            <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <div className="flex items-center gap-x-4 lg:gap-x-6">
-                {/* Separator */}
-                <div
-                  aria-hidden="true"
-                  className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200"
-                />
-              </div>
-            </div>
+            {/* <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6"></div> */}
           </div>
 
           <main className="py-10">
@@ -130,7 +117,8 @@ const DashboardLayout: React.FC = () => {
                 <Route path="/addcar" element={<AddCar />} />
                 <Route path="details/:id" element={<CarDetails />} />
                 <Route path="mylistings" element={<Listings />} />
-                <Route path="bookings" element={<Bookings />} />
+                <Route path="bookings/owner" element={<OwnerBookings />} />
+                <Route path="bookings/renter" element={<RenterBookings />} />
                 <Route path="mylistings/update/:id" element={<UpdateCar />} />
                 {/* <Route path="profile" element={<Profile />} /> */}
               </Routes>

@@ -1,7 +1,11 @@
 import { DrivingMode, fuelType } from "../interfaces/CarInterfaces";
 
+export const selectPhrases = {
+  make: "Select a brand",
+  model: "Select a model",
+};
 export const carBrands = [
-  { id: 0, name: "Select a brand" },
+  { id: 0, name: selectPhrases.make },
   // { id: 1, name: "Acura" },
   // { id: 2, name: "Alfa Romeo" },
   // { id: 3, name: "Aston Martin" },
@@ -54,7 +58,7 @@ export const carBrands = [
 
 export const carModels = {
   bmw: [
-    { id: 0, name: "Select a model" },
+    { id: 0, name: selectPhrases.model },
     { id: 1, name: "1 Series" },
     { id: 2, name: "2 Series Coupe" },
     { id: 3, name: "2 Series Gran Coupe" },
@@ -96,7 +100,7 @@ export const carModels = {
     { id: 39, name: "X7 M50i" },
   ],
   mercedes: [
-    { id: 0, name: "Select a model" },
+    { id: 0, name: selectPhrases.model },
     { id: 1, name: "A-Class" },
     { id: 2, name: "B-Class" },
     { id: 3, name: "C-Class Sedan" },

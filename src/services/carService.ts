@@ -1,28 +1,25 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { ApiClient } from "./apiClient";
-
-const userId = sessionStorage.getItem("userId");
+import { Car } from "../interfaces/CarInterfaces";
+import {
+  AvailabilityDate,
+  DateInterval,
+} from "../interfaces/BookingInterfaces";
 
 const pathURL = "/cars";
 const apiClient = ApiClient(pathURL);
 
-interface test {
-  id: string;
-  title: string;
-  price: string;
-}
-
 const CarService = {
-  addCar: async (carData): Promise<AxiosResponse<any>> => {
+  addCar: async (carData: Car): Promise<AxiosResponse<any>> => {
     try {
-      const response = await apiClient.post("", { ...carData });
-      return response.data;
+      const response = await apiClient.post("", carData);
+      return response;
     } catch (error) {
       throw new Error(error);
     }
   },
 
-  getCars: async (filter): Promise<test[]> => {
+  getCars: async (filter): Promise<Car[]> => {
     try {
       const response = await apiClient.post("/filter", filter); // we used POST because we have the intention to use more advanced filter options, which will be complicated to pass all of them in params.
       return response.data;
@@ -32,7 +29,7 @@ const CarService = {
       throw new Error(error);
     }
   },
-  getCar: async (id): Promise<AxiosResponse<any>> => {
+  getCar: async (id): Promise<Car> => {
     try {
       const response = await apiClient.get(`/${id}`);
       return response.data;
@@ -41,9 +38,9 @@ const CarService = {
     }
   },
 
-  getCarByUSerId: async (): Promise<AxiosResponse<any>[]> => {
+  getCarByUSerId: async (): Promise<Car[]> => {
     try {
-      const response = await apiClient.get(`/user/${userId}`);
+      const response = await apiClient.get(`/user`);
       return response.data;
     } catch (error) {
       throw new Error(error);
@@ -51,9 +48,7 @@ const CarService = {
   },
   deleteCar: async (carId): Promise<AxiosResponse<any>> => {
     try {
-      const response = await apiClient.delete(`/${carId}`, {
-        params: { userId },
-      });
+      const response = await apiClient.delete(`/${carId}`);
       return response.data;
     } catch (error) {
       throw new Error(error);
@@ -61,8 +56,51 @@ const CarService = {
   },
 
   updateCar: async (carId, updates): Promise<AxiosResponse<any>> => {
+    console.log("were here");
+
     try {
-      const response = await apiClient.patch(`/${carId}`, updates);
+      const response = await apiClient.put(`/${carId}`, updates);
+      console.log("Then here");
+
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  getAvailabilities: async (carId): Promise<AvailabilityDate[]> => {
+    try {
+      const res = await apiClient.get(`/${carId}/availabilities`);
+      return res.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  addUnavailableDates: async (
+    dates: DateInterval,
+    carId: number
+  ): Promise<AxiosResponse<any>> => {
+    try {
+      const response = await apiClient.post(`/${carId}/availabilities`, {
+        startDate: dates.unavailableFrom,
+        endDate: dates.unavailableTo,
+      });
+      console.log(response);
+      console.log("hi");
+
+      return response;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  deleteAvailability: async (
+    availabilityId,
+    dates
+  ): Promise<AxiosResponse<any>> => {
+    try {
+      const response = await apiClient.delete(
+        `/availabilities/${availabilityId}`,
+        dates
+      );
       return response.data;
     } catch (error) {
       throw new Error(error);
