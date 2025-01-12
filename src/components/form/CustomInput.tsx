@@ -1,6 +1,6 @@
 import { inputStyles } from "../../utils/style/validationFormStyles";
 
-const AuthenticationInput = ({
+const CustomInput = ({
   disabled,
   labelText,
   register,
@@ -8,9 +8,11 @@ const AuthenticationInput = ({
   name,
   error,
   type,
+  autoComplete = "",
+  defaultValue = "",
 }) => {
   return (
-    <div>
+    <>
       <label
         htmlFor={label}
         className="block text-sm/6 font-medium text-gray-900"
@@ -20,9 +22,11 @@ const AuthenticationInput = ({
       <div className="mt-2">
         <input
           disabled={disabled}
-          id={name}
+          id={label}
           name={name}
+          defaultValue={defaultValue}
           type={type}
+          autoComplete={autoComplete}
           {...register(name)}
           className={`${error ? inputStyles.error : inputStyles.correct} ${
             inputStyles.base
@@ -34,8 +38,8 @@ const AuthenticationInput = ({
           </p>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
-export default AuthenticationInput;
+export default CustomInput;

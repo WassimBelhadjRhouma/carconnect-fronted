@@ -4,7 +4,8 @@ import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
 import CarService from "../services/carService";
 import classNames from "classnames";
-import ModalReservation from "../components/ModalReservation";
+import ModalReservation from "../components/car/ModalReservation";
+import { Car } from "../interfaces/CarInterfaces";
 
 const images = [
   {
@@ -60,7 +61,7 @@ interface CarDetails {
 
 export default function CarDetails() {
   const { id } = useParams();
-  const [car, setCar] = useState<CarDetails>();
+  const [car, setCar] = useState<any>();
   const [showModal, setShowModal] = useState(false);
 
   const handleModal = (val) => {
@@ -71,14 +72,14 @@ export default function CarDetails() {
     CarService.getCar(id)
       .then((res) => {
         const highlights = [
-          `Make: ${res.data.make}`,
-          `Mode: ${res.data.model} ${res.data.year}`,
-          `Fuel Type: ${res.data.fuelType}`,
-          `Driving Mode ${res.data.drivingMode}`,
-          `Mileage ${res.data.mileage}`,
+          `Make: ${res.make}`,
+          `Model: ${res.model} ${res.model}`,
+          `Fuel Type: ${res.fuelType}`,
+          `Driving Mode: ${res.drivingMode}`,
+          `Mileage: ${res.mileage}`,
         ];
-        setCar({ ...res.data, highlights });
-        console.log(res.data);
+        setCar({ ...res, highlights });
+        console.log(res);
       })
       .catch((err) => console.log(err.message));
   }, []);
