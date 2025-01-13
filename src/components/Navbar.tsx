@@ -1,13 +1,15 @@
 import classNames from "classnames";
 import {
   BookOpenIcon,
+  CheckBadgeIcon,
   HomeIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import AddDucumentModal from "./admin/AddDocumentModal";
+import { USER_TYPES } from "../interfaces/AuthInterfaces";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
@@ -26,6 +28,9 @@ const navigation = [
     href: "/dashboard/bookings/renter",
     icon: BookOpenIcon,
   },
+];
+
+const adminLinks = [
   {
     name: "Car Verification",
     href: "/dashboard/verify/cars",
@@ -42,10 +47,22 @@ export default function Navbar() {
   const [current, setCurrent] = useState("Home");
   const { logout } = useAuth();
   const [viewModal, setViewModal] = useState(false);
-
+  const [isVisited, setIsVisited] = useState(false);
   const clearModal = () => {
     setViewModal(false);
   };
+
+  const [navLinks, setNavLinks] = useState(navigation);
+  const { role, status } = useAuth();
+
+  useEffect(() => {
+    if (role === USER_TYPES.ADMIN && !isVisited) {
+      setIsVisited(true);
+      setNavLinks((oldVal) => {
+        return [...navigation, ...adminLinks];
+      });
+    }
+  }, [role, status]);
 
   return (
     <nav className="flex flex-1 flex-col">
@@ -61,7 +78,7 @@ export default function Navbar() {
       <ul role="list" className="flex flex-1 flex-col gap-y-7">
         <li>
           <ul role="list" className="-mx-2 space-y-1">
-            {navigation.map((item) => (
+            {navLinks?.map((item) => (
               <li key={item.name}>
                 <Link
                   to={item.href}
@@ -89,7 +106,21 @@ export default function Navbar() {
           </ul>
         </li>
       </ul>
-      <button onClick={() => setViewModal(true)}> start verif</button>
+
+      {status === "NOTVERIFIED" && role != USER_TYPES.ADMIN && (
+        <button onClick={() => setViewModal(true)}> start verif</button>
+      )}
+
+      {status !== "NOTVERIFIED" && role != USER_TYPES.ADMIN && (
+        <div className="flex items-center space-x-2">
+          <CheckBadgeIcon
+            aria-hidden="true"
+            className="size-5 text-yellow-500"
+          />
+          <p onClick={() => setViewModal(true)}> Verified</p>
+        </div>
+      )}
+
       <button onClick={logout}>logout</button>
     </nav>
   );

@@ -13,10 +13,11 @@ export interface OwnershipVerification {
 
 export interface LicenceVerification {
   id?: number;
-  // ownerId: number;
-  // ownerName: string;
+  userId: number;
+  userName: string;
   drivingLicenceFrontPage: string;
   drivingLicenceBackPage: string;
-  // requestedAt: string;
-  // verified: boolean;
+  birthDate: string;
+  requestedAt: string;
+  verified: boolean;
 }

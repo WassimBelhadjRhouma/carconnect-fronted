@@ -48,6 +48,17 @@ const UserService = {
     }
   },
 
+  getStatus: async (): Promise<any> => {
+    try {
+      const res = await apiClient.get("/status");
+      console.log(res.data);
+
+      return res.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
   //   deleteCar: (carId) => axios.delete(`${API_BASE_URL}/${carId}`),
   //   updateCar: (carId, updates) =>
   //     axios.patch(`${API_BASE_URL}/${carId}`, updates),

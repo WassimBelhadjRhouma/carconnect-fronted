@@ -1,63 +1,40 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
-import { StarIcon } from "@heroicons/react/20/solid";
-import ReviewService from "../../services/ReviewService";
-import { Review } from "../../interfaces/ReviewInterfaces";
 import AdminService from "../../services/AdminService";
 import DownloadButton from "../../components/admin/DownloadButton";
-import { OwnershipVerification } from "../../interfaces/Verifications";
+import { LicenceVerification } from "../../interfaces/Verifications";
 import dayjs from "dayjs";
 import LoaderSpinner from "../../components/LoaderSpinner";
 
 interface MyComponentProps {}
-const verifications = [
-  {
-    id: "AAPS0L",
-    company: "Chase & Co.",
-    share: "CAC",
-    commission: "+$4.37",
-    price: "$3,509.00",
-    quantity: "12.00",
-    netAmount: "$4,397.00",
-  },
-  // More verifications...
-];
 
 const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
-  const [verifications, setVerifications] = useState<OwnershipVerification[]>();
+  const [verifications, setVerifications] = useState<LicenceVerification[]>();
   const [isLoading, setIsLoading] = useState(false);
 
-  //   useEffect(() => {
-  //     const fetchRequests = async () => {
-  //       setIsLoading(true);
-  //       try {
-  //         const response = await AdminService.getOwnershipRequests();
-  //         console.log(response);
-  //         setVerifications(response);
-  //       } catch (err) {
-  //         console.log(err);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-  //     fetchRequests();
-  //   }, []);
+  useEffect(() => {
+    const fetchRequests = async () => {
+      setIsLoading(true);
+      try {
+        const response = await AdminService.getLicenceRequests();
+        console.log(response);
+        setVerifications(response);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchRequests();
+  }, []);
 
-  const updateVerification = async (carId, decision) => {
+  const updateVerification = async (userId, decision) => {
     try {
-      const res = AdminService.updateCarOwnership(carId, decision);
+      const res = AdminService.updateLicence(userId, decision);
       console.log(res);
       setVerifications((prevVal) =>
         prevVal.map((verification) =>
-          verification.carId === carId
+          verification.userId === userId
             ? { ...verification, verified: true }
             : verification
         )
@@ -111,13 +88,13 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
                       scope="col"
                       className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Driving Licence{" "}
+                      Driving Licence Front Side{" "}
                     </th>
                     <th
                       scope="col"
                       className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Driving Licence{" "}
+                      Driving Licence Back Side{" "}
                     </th>
                     <th
                       scope="col"
@@ -135,31 +112,22 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
                         {dayjs(verification.requestedAt).format("MMMM D, YYYY")}
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">
-                        {verification.ownerName}
+                        {verification.userName}
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">
-                        birth date
-                      </td>
-                      <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-                        {verification.carMake}
-                      </td>
-                      <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        {verification.carModel}
-                      </td>
-                      <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        {verification.licensePlate} licence plate
+                        {verification.birthDate} / birthdate
                       </td>
 
                       <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <DownloadButton
                           side={"Front"}
-                          base64Image={verification.ownershipDocuments[0]}
+                          base64Image={verification.drivingLicenceFrontPage}
                         />{" "}
                       </td>
                       <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <DownloadButton
                           side={"Back"}
-                          base64Image={verification.ownershipDocuments[1]}
+                          base64Image={verification.drivingLicenceBackPage}
                         />
                       </td>
                       <td className="mt-6 items-center  divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-3">
@@ -168,7 +136,7 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
                             <div className="flex flex-1 justify-center">
                               <button
                                 onClick={() => {
-                                  updateVerification(verification.carId, true);
+                                  updateVerification(verification.userId, true);
                                 }}
                                 className="whitespace-nowrap text-indigo-600 hover:text-indigo-500"
                               >
@@ -178,7 +146,10 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
                             <div className="flex flex-1 justify-center pl-4">
                               <button
                                 onClick={() => {
-                                  updateVerification(verification.carId, false);
+                                  updateVerification(
+                                    verification.userId,
+                                    false
+                                  );
                                 }}
                                 className="whitespace-nowrap text-red-800 hover:text-red-500"
                               >

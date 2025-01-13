@@ -1,4 +1,4 @@
-import { Car } from "../../interfaces/CarInterfaces";
+import { Car, CarStatus } from "../../interfaces/CarInterfaces";
 import { StarIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
 import { Link, useNavigate } from "react-router-dom";
@@ -60,15 +60,32 @@ const CarCard: React.FC<ComponentProps> = ({
           {car.pricePerDay}
         </p>
         {/* Delete and update buttons */}
-        {showButtons && (
+        {showButtons &&
+          car.verificationStatus != CarStatus.PENDING &&
+          car.verificationStatus != CarStatus.REFUSED && (
+            <div>
+              <button
+                onClick={() => navigate(`update/${car.id}`)}
+                type="button"
+                className="inline-flex mt-3 items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Edit{" "}
+              </button>
+              <button
+                onClick={() => deleteCar(car.id)}
+                type="button"
+                className="inline-flex  bg-[#c7c1c3] ml-4 mt-3 items-center gap-x-2 rounded-md bg-gray-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+              >
+                delete{" "}
+              </button>
+            </div>
+          )}
+
+        {car.verificationStatus === CarStatus.PENDING && (
           <div>
-            <button
-              onClick={() => navigate(`update/${car.id}`)}
-              type="button"
-              className="inline-flex mt-3 items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Edit{" "}
-            </button>
+            <p className="inline-flex mt-3 items-center gap-x-2 rounded-md bg-gray-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
+              Under Review{" "}
+            </p>
             <button
               onClick={() => deleteCar(car.id)}
               type="button"

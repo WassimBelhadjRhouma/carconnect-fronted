@@ -3,6 +3,7 @@ import DashboardLayout from "../pages/DashboardLayout";
 import Login from "../pages/Login";
 import SignUp from "../pages/signup";
 import CarOwnershipVerification from "../pages/admin/CarOwnershipVerification";
+import DrivingLicenceVerif from "../pages/admin/DrivingLicenceVerif";
 
 export const PATHS = {
   public: {
@@ -11,7 +12,8 @@ export const PATHS = {
   },
   private: {
     DASHBOARD: "/dashboard/*",
-    ADMIN_CAR_VERIF: "/admin/cars",
+    verif_licence: "/dashboard/verify/cars",
+    verif_ownership: "/dashboard/verify/drivinglicence",
   },
 };
 
@@ -20,6 +22,7 @@ export interface RouteConfig {
   element: ReactElement;
   isProtected: Boolean;
   isPublic?: Boolean;
+  isAdmin?: boolean;
 }
 
 export const APP_ROUTES: RouteConfig[] = [
@@ -41,8 +44,15 @@ export const APP_ROUTES: RouteConfig[] = [
     isProtected: true,
   },
   {
-    path: PATHS.private.ADMIN_CAR_VERIF,
+    path: PATHS.private.verif_licence,
+    element: <DrivingLicenceVerif />,
+    isProtected: true,
+    isAdmin: true,
+  },
+  {
+    path: PATHS.private.verif_ownership,
     element: <CarOwnershipVerification />,
     isProtected: true,
+    isAdmin: true,
   },
 ];

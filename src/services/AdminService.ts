@@ -5,7 +5,10 @@ import {
   GetBookingsResponse,
 } from "../interfaces/BookingInterfaces";
 import { Review } from "../interfaces/ReviewInterfaces";
-import { OwnershipVerification } from "../interfaces/Verifications";
+import {
+  LicenceVerification,
+  OwnershipVerification,
+} from "../interfaces/Verifications";
 
 const pathURL = "/admin";
 const apiClient = ApiClient(pathURL);
@@ -27,6 +30,30 @@ const AdminService = {
           isApproved: decision,
         },
       });
+      return res.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  getLicenceRequests: async (): Promise<LicenceVerification[]> => {
+    try {
+      const res = await apiClient.get("/driver-verification-requests");
+      return res.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  updateLicence: async (userId, decision): Promise<Review[]> => {
+    try {
+      const res = await apiClient.post(
+        `/verify-driver-license/${userId}`,
+        null,
+        {
+          params: {
+            isApproved: decision,
+          },
+        }
+      );
       return res.data;
     } catch (error) {
       throw new Error(error);

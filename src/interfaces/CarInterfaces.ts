@@ -4,6 +4,7 @@ export interface Car {
   description?: string;
   make?: string;
   model?: string;
+  verificationStatus?: string;
   drivingMode?: DrivingMode;
   fuelType?: fuelType;
   licencePlate?: string;
@@ -16,6 +17,12 @@ export interface Car {
   imageDataList?: any[];
   images?: string[];
   ownershipDocuments?: string[];
+}
+
+export enum CarStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REFUSED = "REFUSED",
 }
 
 export enum DrivingMode {
