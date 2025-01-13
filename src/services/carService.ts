@@ -70,6 +70,8 @@ const CarService = {
   getAvailabilities: async (carId): Promise<AvailabilityDate[]> => {
     try {
       const res = await apiClient.get(`/${carId}/availabilities`);
+      console.log("Availabilities:", res);
+
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -84,10 +86,7 @@ const CarService = {
         startDate: dates.unavailableFrom,
         endDate: dates.unavailableTo,
       });
-      console.log(response);
-      console.log("hi");
-
-      return response;
+      return response.data;
     } catch (error) {
       throw new Error(error);
     }

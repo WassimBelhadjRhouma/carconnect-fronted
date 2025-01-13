@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { PhotoIcon } from "@heroicons/react/20/solid";
+import { PhotoIcon, PaperClipIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -20,6 +20,7 @@ import { AddCarSchema } from "../schemas/CarSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomInput from "../components/form/CustomInput";
 import { Car } from "../interfaces/CarInterfaces";
+import { fileToBase64 } from "../utils/FileTransfer";
 
 interface IFormInputs {
   title: string;
@@ -29,6 +30,8 @@ interface IFormInputs {
   postalCode: string;
   pricePerDay: string;
   licencePlate: string;
+  frontImage: any;
+  backImage: any;
   imageDataList: any[];
 }
 export default function App() {
@@ -55,6 +58,9 @@ export default function App() {
   const [selectedYear, setSelectedYear] = useState(constructionYears[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [showYear, setShowYear] = useState(false);
+  const [frontImageName, setFrontImageName] = useState(null);
+  const [backImageName, setBackImageName] = useState(null);
+
   const [modelBehavior, setModelBehavior] = useState({
     show: false,
     models: [],
@@ -69,6 +75,11 @@ export default function App() {
     mode: "onTouched",
   });
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
+    const backImage = data.backImage;
+    const frontImage = data.frontImage;
+    delete data.backImage;
+    delete data.frontImage;
+
     const allData: Car = {
       ...data,
       make: selectedBrand.name,
@@ -77,6 +88,7 @@ export default function App() {
       mileage: selectedMileageInterval.name,
       fuelType: selectedFuel.name,
       constructionYear: selectedYear.name,
+      ownershipDocuments: [frontImage, backImage],
     };
     const errorsDisplay = {
       show: false,
@@ -139,13 +151,26 @@ export default function App() {
       });
   };
 
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
+  const handleSingleFileChange = (event) => {
+    console.log(event.target.name);
+
+    const file = event.target.files[0]; // Get the first file
+
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+
+    fileToBase64(file)
+      .then((base64Image) => {
+        setValue(event.target.name, base64Image, { shouldValidate: true }); // Save the Base64 string for the image
+        event.target.name === "frontImage"
+          ? setFrontImageName(file.name)
+          : setBackImageName(file.name); // Optional: Set the preview image
+      })
+      .catch((error) => {
+        console.error("Error converting the image:", error);
+      });
   };
 
   useEffect(() => {
@@ -335,11 +360,9 @@ export default function App() {
                       className="sr-only"
                     />
                   </label>
-                  <p className="pl-1">or drag and drop</p>
+                  {/* <p className="pl-1">or drag and drop</p> */}
                 </div>
-                <p className="text-xs/5 text-gray-600">
-                  PNG, JPG, GIF up to 10MB
-                </p>
+                <p className="text-xs/5 text-gray-600">PNG, JPG up to 10MB</p>
               </div>
             </div>
             {errors.imageDataList && (
@@ -357,6 +380,70 @@ export default function App() {
                 style={{ width: "100px", height: "100px", margin: "10px" }}
               />
             ))}
+          </div>
+
+          {/* document verification front page */}
+
+          <div className="col-start-1 col-span-3">
+            <div className="mt-4 col-start-1 col-span-3 flex space-x-4 text-sm/6 text-gray-600">
+              <label
+                htmlFor="frontImage"
+                className="relative cursor-pointer rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+              >
+                <div className="flex space-x-2 items-center justify-center ">
+                  <span>Upload Front Image of Ownership Document * </span>
+                  <PaperClipIcon
+                    aria-hidden="true"
+                    className="size-5 text-gray-800"
+                  />{" "}
+                </div>
+                <input
+                  id="frontImage"
+                  name="frontImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSingleFileChange}
+                  className="sr-only"
+                />
+              </label>
+              <span>{frontImageName}</span>
+            </div>
+            {errors.frontImage && (
+              <p id="images-error" className="mt-2 text-sm text-red-600">
+                This document is required
+              </p>
+            )}
+          </div>
+          {/*  document verification back page */}
+          <div className="col-start-1 col-span-3">
+            <div className="mt-4 col-start-1 col-span-3 flex space-x-4 text-sm/6 text-gray-600">
+              <label
+                htmlFor="backImage"
+                className="relative cursor-pointer rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+              >
+                <div className="flex space-x-2 items-center justify-center ">
+                  <span>Upload Back Image of Ownership Document * </span>
+                  <PaperClipIcon
+                    aria-hidden="true"
+                    className="size-5 text-gray-800"
+                  />{" "}
+                </div>
+                <input
+                  id="backImage"
+                  name="backImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSingleFileChange}
+                  className="sr-only"
+                />
+              </label>
+              <span>{backImageName}</span>
+            </div>
+            {errors.backImage && (
+              <p id="images-error" className="mt-2 text-sm text-red-600">
+                This document is required
+              </p>
+            )}
           </div>
           {/* licence plate */}
           <div className="col-start-1">

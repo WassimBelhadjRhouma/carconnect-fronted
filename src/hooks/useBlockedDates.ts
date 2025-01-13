@@ -50,8 +50,9 @@ const useBlockedDates = (carId) => {
   const addBlockedDateInterval = (intervalToAdd) => {
     setBlockedDatesIntervals((prevIntervals) => {
       // const updatedIntervals = [];
-      prevIntervals.push(intervalToAdd);
-      return prevIntervals;
+      console.log(prevIntervals);
+
+      return [...prevIntervals, intervalToAdd];
     });
   };
 

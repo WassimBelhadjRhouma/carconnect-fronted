@@ -6,6 +6,9 @@ import CarService from "../services/carService";
 import classNames from "classnames";
 import ModalReservation from "../components/car/ModalReservation";
 import { Car } from "../interfaces/CarInterfaces";
+import ReviewCard from "../components/reviewComponent/ReviewCard";
+import ReviewService from "../services/ReviewService";
+import { Review } from "../interfaces/ReviewInterfaces";
 
 const images = [
   {
@@ -26,62 +29,46 @@ const images = [
   },
 ];
 
-const reviews = [
-  {
-    id: 1,
-    title: "Can't say enough good things",
-    rating: 5,
-    content: `
-      <p>I was really pleased with the overall shopping experience. My order even included a little personal, handwritten note, which delighted me!</p>
-      <p>The product quality is amazing, it looks and feel even better than I had anticipated. Brilliant stuff! I would gladly recommend this store to my friends. And, now that I think of it... I actually have, many times!</p>
-    `,
-    author: "Risako M",
-    date: "May 16, 2021",
-    datetime: "2021-01-06",
-  },
-  // More reviews...
-];
-
-interface CarDetails {
-  title: string;
-  description: string;
-  make: string;
-  model: string;
-  year: string;
-  fuelType: string;
-  mileage: string;
-  drivingMode: string;
-  licencePlate: string;
-  streetAddress: string;
-  postalCode: number;
-  city: string;
-  highlights: string[];
-  pricePerDay: number;
-}
-
 export default function CarDetails() {
   const { id } = useParams();
   const [car, setCar] = useState<any>();
   const [showModal, setShowModal] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>();
+  const [hoveredStar, setHoveredStar] = useState(null);
+  const [selectedRating, setSelectedRating] = useState(1); // Tracks the clicked star
 
   const handleModal = (val) => {
     setShowModal(val);
   };
 
   useEffect(() => {
-    CarService.getCar(id)
-      .then((res) => {
-        const highlights = [
-          `Make: ${res.make}`,
-          `Model: ${res.model} ${res.model}`,
-          `Fuel Type: ${res.fuelType}`,
-          `Driving Mode: ${res.drivingMode}`,
-          `Mileage: ${res.mileage}`,
-        ];
-        setCar({ ...res, highlights });
-        console.log(res);
-      })
-      .catch((err) => console.log(err.message));
+    const fetchCar = async () => {
+      CarService.getCar(id)
+        .then((res) => {
+          const highlights = [
+            `Make: ${res.make}`,
+            `Model: ${res.model} ${res.model}`,
+            `Fuel Type: ${res.fuelType}`,
+            `Driving Mode: ${res.drivingMode}`,
+            `Mileage: ${res.mileage}`,
+          ];
+          setCar({ ...res, highlights });
+          console.log(res);
+        })
+        .catch((err) => console.log(err.message));
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const res = await ReviewService.getReviews(id);
+        setReviews(res);
+        console.log("reviews are", res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCar();
+    fetchReviews();
   }, []);
 
   return (
@@ -202,63 +189,21 @@ export default function CarDetails() {
           </div>
         </div>
       </div>
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <h2 className="text-lg font-medium text-gray-900">Recent reviews</h2>
-          <div className="mt-6 space-y-10 divide-y divide-gray-200 border-b border-t border-gray-200 pb-10">
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="pt-10 lg:grid lg:grid-cols-12 lg:gap-x-8"
-              >
-                <div className="lg:col-span-8 lg:col-start-5 xl:col-span-9 xl:col-start-4 xl:grid xl:grid-cols-3 xl:items-start xl:gap-x-8">
-                  <div className="flex items-center xl:col-span-1">
-                    <div className="flex items-center">
-                      {[0, 1, 2, 3, 4].map((rating) => (
-                        <StarIcon
-                          key={rating}
-                          aria-hidden="true"
-                          className={classNames(
-                            review.rating > rating
-                              ? "text-yellow-400"
-                              : "text-gray-200",
-                            "size-5 shrink-0"
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <p className="ml-3 text-sm text-gray-700">
-                      {review.rating}
-                      <span className="sr-only"> out of 5 stars</span>
-                    </p>
-                  </div>
 
-                  <div className="mt-4 lg:mt-6 xl:col-span-2 xl:mt-0">
-                    <h3 className="text-sm font-medium text-gray-900">
-                      {review.title}
-                    </h3>
-
-                    <div
-                      dangerouslySetInnerHTML={{ __html: review.content }}
-                      className="mt-3 space-y-6 text-sm text-gray-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-6 flex items-center text-sm lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex-col lg:items-start xl:col-span-3">
-                  <p className="font-medium text-gray-900">{review.author}</p>
-                  <time
-                    dateTime={review.datetime}
-                    className="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0"
-                  >
-                    {review.date}
-                  </time>
-                </div>
-              </div>
-            ))}
+      {reviews && (
+        <div className="bg-white">
+          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+            <h2 className="text-lg font-medium text-gray-900">
+              Recent reviews
+            </h2>
+            <div className="mt-6 space-y-10 divide-y divide-gray-200 border-b border-t border-gray-200 pb-10">
+              {reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

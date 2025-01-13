@@ -10,7 +10,9 @@ const BaseCarSchema = z.object({
 });
 
 export const AddCarSchema = BaseCarSchema.extend({
-  imageDataList: z.array(z.any()), // Specific to AddCar
+  imageDataList: z.array(z.any()),
+  frontImage: z.string(),
+  backImage: z.string(),
   licencePlate: z.string().min(5, "Licence Plate required"),
 });
 

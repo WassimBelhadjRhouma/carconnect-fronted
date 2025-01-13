@@ -33,11 +33,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
     >
       {viewModal && (
         <ReviewModal
+          bookingId={booking.id}
           viewModal={viewModal}
+          clearModal={clearModal}
           title={"Your review matter"}
           textButton={"Add Review"}
           navigateTo={""}
-          clearModal={clearModal}
           carId={booking.car.id}
         />
       )}
@@ -163,7 +164,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 )}
 
               {booking.status === BookingStatus.COMPLETED &&
-                bookingType === BookingTypes.RENTER && (
+                bookingType === BookingTypes.RENTER &&
+                !booking.reviewed && (
                   <div className="flex flex-1 justify-center pl-4">
                     <button
                       onClick={() => setViewModal(true)}
