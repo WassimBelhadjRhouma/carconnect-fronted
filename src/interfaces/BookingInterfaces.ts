@@ -7,6 +7,7 @@ export interface Booking {
   message?: string;
   status?: BookingStatus;
   car?: Car;
+  reviewed?: boolean;
 }
 export interface GetBookingsResponse {
   ownerRequests: Booking[];

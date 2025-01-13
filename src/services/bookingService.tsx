@@ -26,6 +26,8 @@ const BookingService = {
   getBookings: async (): Promise<GetBookingsResponse> => {
     try {
       const res = await apiClient.get(`/all`);
+      console.log(res);
+
       return res.data;
     } catch (error) {
       throw new Error(error);

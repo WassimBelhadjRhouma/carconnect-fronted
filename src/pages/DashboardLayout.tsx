@@ -20,21 +20,14 @@ import {
 import Logo from "../components/Logo";
 import CarDetails from "./CarDetails";
 import Home from "./Home";
-import AddCar from "./AddCar";
 import UpdateCar from "./UpdateCar";
 import Navbar from "../components/Navbar";
 import Listings from "./Listings";
 import OwnerBookings from "./OwnerBookings";
 import RenterBookings from "./RenterBookings";
-const navigation = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
-  {
-    name: "Listings",
-    href: "/dashboard/mylistings",
-    icon: PencilSquareIcon,
-    current: false,
-  },
-];
+import AddCar from "./AddCar";
+import CarOwnershipVerification from "./admin/CarOwnershipVerification";
+import DrivingLicenceVerif from "./admin/DrivingLicenceVerif";
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -120,7 +113,14 @@ const DashboardLayout: React.FC = () => {
                 <Route path="bookings/owner" element={<OwnerBookings />} />
                 <Route path="bookings/renter" element={<RenterBookings />} />
                 <Route path="mylistings/update/:id" element={<UpdateCar />} />
-                {/* <Route path="profile" element={<Profile />} /> */}
+                <Route
+                  path="verify/cars"
+                  element={<CarOwnershipVerification />}
+                />
+                <Route
+                  path="verify/drivinglicence"
+                  element={<DrivingLicenceVerif />}
+                />
               </Routes>
             </div>
           </main>

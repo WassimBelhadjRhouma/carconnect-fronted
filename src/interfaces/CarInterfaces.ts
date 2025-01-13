@@ -15,6 +15,7 @@ export interface Car {
   constructionYear?: string;
   imageDataList?: any[];
   images?: string[];
+  ownershipDocuments?: string[];
 }
 
 export enum DrivingMode {

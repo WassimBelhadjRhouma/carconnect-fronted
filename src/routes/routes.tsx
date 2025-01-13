@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import DashboardLayout from "../pages/DashboardLayout";
 import Login from "../pages/Login";
 import SignUp from "../pages/signup";
+import CarOwnershipVerification from "../pages/admin/CarOwnershipVerification";
 
 export const PATHS = {
   public: {
@@ -9,7 +10,8 @@ export const PATHS = {
     SIGNUP: "/signup",
   },
   private: {
-    DASHBOARD: "/dashboard/*"
+    DASHBOARD: "/dashboard/*",
+    ADMIN_CAR_VERIF: "/admin/cars",
   },
 };
 
@@ -18,12 +20,29 @@ export interface RouteConfig {
   element: ReactElement;
   isProtected: Boolean;
   isPublic?: Boolean;
-  }
-  
-  export const APP_ROUTES: RouteConfig[] = [
-    { path: PATHS.public.SIGNIN, element: <Login />,isPublic: true, isProtected: false },
-    { path: PATHS.public.SIGNUP, element: <SignUp />,isPublic: true, isProtected: false },
-    { path: PATHS.private.DASHBOARD, element: <DashboardLayout />, isProtected: true },
-  ];
+}
 
-
+export const APP_ROUTES: RouteConfig[] = [
+  {
+    path: PATHS.public.SIGNIN,
+    element: <Login />,
+    isPublic: true,
+    isProtected: false,
+  },
+  {
+    path: PATHS.public.SIGNUP,
+    element: <SignUp />,
+    isPublic: true,
+    isProtected: false,
+  },
+  {
+    path: PATHS.private.DASHBOARD,
+    element: <DashboardLayout />,
+    isProtected: true,
+  },
+  {
+    path: PATHS.private.ADMIN_CAR_VERIF,
+    element: <CarOwnershipVerification />,
+    isProtected: true,
+  },
+];

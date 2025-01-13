@@ -5,44 +5,43 @@ import {
   GetBookingsResponse,
 } from "../interfaces/BookingInterfaces";
 import { Review } from "../interfaces/ReviewInterfaces";
+import {
+  LicenceVerification,
+  OwnershipVerification,
+} from "../interfaces/Verifications";
 
-const pathURL = "/reviews";
+const pathURL = "/users";
 const apiClient = ApiClient(pathURL);
 
-const ReviewService = {
-  addReview: async (requestBody: Review): Promise<AxiosResponse<any>> => {
-    console.log(requestBody);
-
+const UserService = {
+  addDrivingLicenceRequest: async (
+    data: LicenceVerification
+  ): Promise<AxiosResponse<any>> => {
     try {
       const res = await apiClient.post("", {
-        ...requestBody,
+        ...data,
       });
       return res;
     } catch (error) {
       throw new Error(error);
     }
   },
-
-  getReviews: async (carId: string): Promise<Review[]> => {
+  getOwnershipRequests: async (): Promise<OwnershipVerification[]> => {
     try {
-      const res = await apiClient.get(`/car/${carId}`);
+      const res = await apiClient.get("/ownership-verification-requests");
       return res.data;
     } catch (error) {
       throw new Error(error);
     }
   },
-  updateBookingStatus: async (
-    bookingId: Number,
-    status: BookingStatus
-  ): Promise<any> => {
-    console.log(bookingId, status);
+
+  updateCarOwnership: async (carId, decision): Promise<Review[]> => {
     try {
-      const res = await apiClient.put(`/${bookingId}/status`, null, {
+      const res = await apiClient.post(`/verify-car-ownership/${carId}`, null, {
         params: {
-          status,
+          isApproved: decision,
         },
       });
-
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -54,4 +53,4 @@ const ReviewService = {
   //     axios.patch(`${API_BASE_URL}/${carId}`, updates),
   // };
 };
-export default ReviewService;
+export default UserService;

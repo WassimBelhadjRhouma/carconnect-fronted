@@ -58,7 +58,6 @@ const ManageAvailabilities: React.FC<ComponentProps> = ({ carId }) => {
       .then((res) => {
         // setOpen(false);
         removeBlockedDateInterval(unavailability);
-        console.log(res);
       })
       .catch((err) => {
         // setShowError(true);
@@ -78,7 +77,8 @@ const ManageAvailabilities: React.FC<ComponentProps> = ({ carId }) => {
       .then((res) => {
         setStartDate(null);
         setEndDate(null);
-        addBlockedDateInterval(data);
+        addBlockedDateInterval(res);
+
         // setOpen(false);
       })
       .catch((err) => {
@@ -126,52 +126,58 @@ const ManageAvailabilities: React.FC<ComponentProps> = ({ carId }) => {
             </button>
           </div>
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full mt-8 py-2 align-middle sm:px-6 lg:px-8">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead>
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
-                    >
-                      From
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      To
-                    </th>
-                    <th
-                      scope="col"
-                      className="relative py-3.5 pl-3 pr-4 sm:pr-3"
-                    >
-                      <span className="sr-only">Delete</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {blockedDatesIntervals.map((interval, index) => (
-                    <tr key={index} className="even:bg-gray-50">
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
-                        {interval.unavailableFrom}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
-                        {interval.unavailableTo}
-                      </td>
-
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                        <button onClick={() => deleteUnavailability(interval)}>
-                          <TrashIcon
-                            aria-hidden="true"
-                            className="size-5 text-gray-700  inline-block "
-                          />
-                        </button>
-                      </td>
+            <div className="inline-block w-2/3 mt-8 py-2 align-middle sm:px-6 lg:px-8">
+              {blockedDatesIntervals?.length > 0 && (
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead>
+                    <tr>
+                      <th
+                        scope="col"
+                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                      >
+                        From
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        To
+                      </th>
+                      <th
+                        scope="col"
+                        className="relative py-3.5 pl-3 pr-4 sm:pr-3 "
+                      >
+                        <span className="sr-only">Delete</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white">
+                    {blockedDatesIntervals.map((interval, index) => (
+                      <tr key={index} className="even:bg-gray-50">
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
+                          {interval.unavailableFrom}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
+                          {interval.unavailableTo}
+                        </td>
+
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                          {interval.deletable && (
+                            <button
+                              onClick={() => deleteUnavailability(interval)}
+                            >
+                              <TrashIcon
+                                aria-hidden="true"
+                                className="size-5 text-gray-700  inline-block "
+                              />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>

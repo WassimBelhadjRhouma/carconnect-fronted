@@ -7,6 +7,7 @@ import {
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import AddDucumentModal from "./admin/AddDocumentModal";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
@@ -25,14 +26,38 @@ const navigation = [
     href: "/dashboard/bookings/renter",
     icon: BookOpenIcon,
   },
+  {
+    name: "Car Verification",
+    href: "/dashboard/verify/cars",
+    icon: BookOpenIcon,
+  },
+  {
+    name: "Driving Licence Verification",
+    href: "/dashboard/verify/drivinglicence",
+    icon: BookOpenIcon,
+  },
 ];
 
 export default function Navbar() {
   const [current, setCurrent] = useState("Home");
   const { logout } = useAuth();
+  const [viewModal, setViewModal] = useState(false);
+
+  const clearModal = () => {
+    setViewModal(false);
+  };
 
   return (
     <nav className="flex flex-1 flex-col">
+      {viewModal && (
+        <AddDucumentModal
+          viewModal={viewModal}
+          clearModal={clearModal}
+          title={"Verify Your Account"}
+          textButton={"Verify Account"}
+          navigateTo={""}
+        />
+      )}
       <ul role="list" className="flex flex-1 flex-col gap-y-7">
         <li>
           <ul role="list" className="-mx-2 space-y-1">
@@ -64,6 +89,7 @@ export default function Navbar() {
           </ul>
         </li>
       </ul>
+      <button onClick={() => setViewModal(true)}> start verif</button>
       <button onClick={logout}>logout</button>
     </nav>
   );

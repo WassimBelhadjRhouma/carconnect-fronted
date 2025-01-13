@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { StarIcon } from "@heroicons/react/20/solid";
 import ReviewService from "../../services/ReviewService";
 import { Review } from "../../interfaces/ReviewInterfaces";
+import ReviewStars from "./ReviewStars";
 
 interface MyComponentProps {
   title: string;
@@ -19,6 +20,7 @@ interface MyComponentProps {
   viewModal: boolean;
   clearModal: any;
   carId: number;
+  bookingId: number;
 }
 
 const ReviewModal: React.FC<MyComponentProps> = ({
@@ -28,6 +30,7 @@ const ReviewModal: React.FC<MyComponentProps> = ({
   viewModal,
   clearModal,
   carId,
+  bookingId,
 }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -47,7 +50,6 @@ const ReviewModal: React.FC<MyComponentProps> = ({
   const handleClick = (index) => {
     setSelectedRating(index); // Set clicked star as the selected rating
   };
-  console.log(selectedRating);
 
   const SubmitHandler = async () => {
     console.log(selectedRating);
@@ -58,13 +60,18 @@ const ReviewModal: React.FC<MyComponentProps> = ({
       car: {
         id: carId,
       },
+      booking: {
+        id: bookingId,
+      },
     };
-    try {
-      const res = await ReviewService.addReview(data);
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
+    console.log(data);
+
+    // try {
+    //   const res = await ReviewService.addReview(data);
+    //   console.log(res);
+    // } catch (err) {
+    //   console.log(err);
+    // }
     setOpen(false);
     clearModal();
     // navigate(navigateTo);
@@ -119,7 +126,7 @@ const ReviewModal: React.FC<MyComponentProps> = ({
                       onClick={() => handleClick(star)}
                     />
                   ))}
-                </div>
+                </div>{" "}
               </div>
               <div className="sm:mt-5 mt-12">
                 <label
