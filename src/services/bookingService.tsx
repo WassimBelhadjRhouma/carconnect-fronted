@@ -1,19 +1,16 @@
 import { AxiosResponse } from "axios";
-import { ApiClient } from "./apiClient";
 import {
   BookingStatus,
   GetBookingsResponse,
 } from "../interfaces/BookingInterfaces";
-
-const userId = sessionStorage.getItem("userId");
+import { ApiClient } from "./apiClient";
 
 const pathURL = "/bookings";
-const apiClient = ApiClient(pathURL);
 
 const BookingService = {
   addBookingRequest: async (data, carId): Promise<AxiosResponse<any>> => {
     try {
-      const res = await apiClient.post("", {
+      const res = await ApiClient.post(pathURL, {
         ...data,
         car: { id: carId },
       });
@@ -25,7 +22,7 @@ const BookingService = {
 
   getBookings: async (): Promise<GetBookingsResponse> => {
     try {
-      const res = await apiClient.get(`/all`);
+      const res = await ApiClient.get(`${pathURL}/all`);
       console.log(res);
 
       return res.data;
@@ -39,7 +36,7 @@ const BookingService = {
   ): Promise<any> => {
     console.log(bookingId, status);
     try {
-      const res = await apiClient.put(`/${bookingId}/status`, null, {
+      const res = await ApiClient.put(`${pathURL}/${bookingId}/status`, null, {
         params: {
           status,
         },

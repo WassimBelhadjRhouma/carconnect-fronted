@@ -12,8 +12,6 @@ export const PATHS = {
   },
   private: {
     DASHBOARD: "/dashboard/*",
-    verif_licence: "/dashboard/verify/cars",
-    verif_ownership: "/dashboard/verify/drivinglicence",
   },
 };
 
@@ -42,17 +40,5 @@ export const APP_ROUTES: RouteConfig[] = [
     path: PATHS.private.DASHBOARD,
     element: <DashboardLayout />,
     isProtected: true,
-  },
-  {
-    path: PATHS.private.verif_licence,
-    element: <DrivingLicenceVerif />,
-    isProtected: true,
-    isAdmin: true,
-  },
-  {
-    path: PATHS.private.verif_ownership,
-    element: <CarOwnershipVerification />,
-    isProtected: true,
-    isAdmin: true,
   },
 ];

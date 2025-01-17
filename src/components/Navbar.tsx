@@ -1,15 +1,21 @@
 import classNames from "classnames";
 import {
   BookOpenIcon,
-  CheckBadgeIcon,
+  CalendarIcon,
   HomeIcon,
+  InboxArrowDownIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import AddDucumentModal from "./admin/AddDocumentModal";
 import { USER_TYPES } from "../interfaces/AuthInterfaces";
+import {
+  ArrowLeftStartOnRectangleIcon,
+  IdentificationIcon,
+} from "@heroicons/react/20/solid";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
@@ -21,12 +27,12 @@ const navigation = [
   {
     name: "Incoming request",
     href: "/dashboard/bookings/owner",
-    icon: BookOpenIcon,
+    icon: InboxArrowDownIcon,
   },
   {
     name: "My Bookings",
     href: "/dashboard/bookings/renter",
-    icon: BookOpenIcon,
+    icon: CalendarIcon,
   },
 ];
 
@@ -75,7 +81,7 @@ export default function Navbar() {
           navigateTo={""}
         />
       )}
-      <ul role="list" className="flex flex-1 flex-col gap-y-7">
+      <ul role="list" className="flex flex-1 flex-col gap-y-9">
         <li>
           <ul role="list" className="-mx-2 space-y-1">
             {navLinks?.map((item) => (
@@ -85,8 +91,8 @@ export default function Navbar() {
                   onClick={() => setCurrent(item.name)}
                   className={classNames(
                     current === item.name
-                      ? "bg-gray-50 text-indigo-600"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                      ? "bg-gray-50 text-darkblue"
+                      : "hover:bg-gray-50 ",
                     "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
                   )}
                 >
@@ -94,8 +100,8 @@ export default function Navbar() {
                     aria-hidden="true"
                     className={classNames(
                       current === item.name
-                        ? "text-indigo-600"
-                        : "text-gray-400 group-hover:text-indigo-600",
+                        ? "text-darkblue"
+                        : "text-gray-400 group-hover:text-darkblue",
                       "size-6 shrink-0"
                     )}
                   />
@@ -105,23 +111,61 @@ export default function Navbar() {
             ))}
           </ul>
         </li>
+        <li>
+          <div className="text-xs/6 font-bold text-darkblue">Hi Wassim !</div>
+          <ul role="list" className=" mt-2 space-y-1">
+            <li className=" items-center flex gap-x-3 text-sm/6 font-semibold">
+              {/* For Verified user  */}
+              {status == "ACCEPTED" && role != USER_TYPES.ADMIN && (
+                <>
+                  <div>
+                    <CheckBadgeIcon
+                      aria-hidden="true"
+                      className="size-5 text-green-500"
+                    />
+                  </div>
+                  <span className="font-medium">Verified Profile</span>
+                </>
+              )}
+
+              {/* For Unverified user */}
+              {status == "NOTVERIFIED" && role != USER_TYPES.ADMIN && (
+                <>
+                  <div>
+                    <IdentificationIcon
+                      aria-hidden="true"
+                      onClick={() => setViewModal(true)}
+                      className="size-5 cursor-pointer text-purple-700"
+                    />
+                  </div>
+                  <span
+                    onClick={() => setViewModal(true)}
+                    className="font-medium text-gray-700 underline cursor-pointer"
+                  >
+                    Verify Your Profile
+                  </span>
+                </>
+              )}
+            </li>
+          </ul>
+        </li>
+        <li onClick={logout} className="-mx-6 mt-auto">
+          <a
+            href="#"
+            className="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-black hover:bg-gray-100"
+          >
+            <div className="flex items-center justify-center  size-8 rounded-full bg-gray-500">
+              {/* <span className="text-white">W</span> */}
+              <ArrowLeftStartOnRectangleIcon
+                aria-hidden="true"
+                className="size-5 cursor-pointer text-white"
+              />
+            </div>
+            <span className="sr-only">Your profile</span>
+            <span aria-hidden="true">Logout</span>
+          </a>
+        </li>
       </ul>
-
-      {status === "NOTVERIFIED" && role != USER_TYPES.ADMIN && (
-        <button onClick={() => setViewModal(true)}> start verif</button>
-      )}
-
-      {status !== "NOTVERIFIED" && role != USER_TYPES.ADMIN && (
-        <div className="flex items-center space-x-2">
-          <CheckBadgeIcon
-            aria-hidden="true"
-            className="size-5 text-yellow-500"
-          />
-          <p onClick={() => setViewModal(true)}> Verified</p>
-        </div>
-      )}
-
-      <button onClick={logout}>logout</button>
     </nav>
   );
 }

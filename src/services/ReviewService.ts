@@ -1,20 +1,16 @@
 import { AxiosResponse } from "axios";
-import { ApiClient } from "./apiClient";
-import {
-  BookingStatus,
-  GetBookingsResponse,
-} from "../interfaces/BookingInterfaces";
+import { BookingStatus } from "../interfaces/BookingInterfaces";
 import { Review } from "../interfaces/ReviewInterfaces";
+import { ApiClient } from "./apiClient";
 
 const pathURL = "/reviews";
-const apiClient = ApiClient(pathURL);
 
 const ReviewService = {
   addReview: async (requestBody: Review): Promise<AxiosResponse<any>> => {
     console.log(requestBody);
 
     try {
-      const res = await apiClient.post("", {
+      const res = await ApiClient.post(pathURL, {
         ...requestBody,
       });
       return res;
@@ -25,7 +21,7 @@ const ReviewService = {
 
   getReviews: async (carId: string): Promise<Review[]> => {
     try {
-      const res = await apiClient.get(`/car/${carId}`);
+      const res = await ApiClient.get(`${pathURL}/car/${carId}`);
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -37,7 +33,7 @@ const ReviewService = {
   ): Promise<any> => {
     console.log(bookingId, status);
     try {
-      const res = await apiClient.put(`/${bookingId}/status`, null, {
+      const res = await ApiClient.put(`${pathURL}/${bookingId}/status`, null, {
         params: {
           status,
         },

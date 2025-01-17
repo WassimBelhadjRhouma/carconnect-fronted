@@ -11,9 +11,7 @@ const AppRoutes: React.FC = () => (
         key={path}
         path={path}
         element={
-          isAdmin ? (
-            <OnlyAdmin>{element}</OnlyAdmin>
-          ) : isProtected ? (
+          isProtected ? (
             <ProtectedRoute>{element}</ProtectedRoute>
           ) : isPublic ? (
             <PublicRoute>{element}</PublicRoute>
