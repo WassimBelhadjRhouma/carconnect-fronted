@@ -13,7 +13,7 @@ import ResponseBox, { statusEnum } from "../components/form/ResponseBox";
 import { useAuth } from "../hooks/useAuth";
 
 const Login: React.FC = () => {
-  const { user, login, token } = useAuth(); // Access values and functions provided by the hook
+  const { user, login } = useAuth(); // Access values and functions provided by the hook
 
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);

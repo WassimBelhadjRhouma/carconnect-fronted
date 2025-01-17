@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 
 import classNames from "classnames";
 import {
@@ -80,7 +80,7 @@ const DashboardLayout: React.FC = () => {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 -4">
             <div className="flex h-16 shrink-0 items-center">
               <Logo></Logo>
             </div>
@@ -104,25 +104,27 @@ const DashboardLayout: React.FC = () => {
           </div>
 
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/addcar" element={<AddCar />} />
-                <Route path="details/:id" element={<CarDetails />} />
-                <Route path="mylistings" element={<Listings />} />
-                <Route path="bookings/owner" element={<OwnerBookings />} />
-                <Route path="bookings/renter" element={<RenterBookings />} />
-                <Route path="mylistings/update/:id" element={<UpdateCar />} />
-                <Route
-                  path="verify/cars"
-                  element={<CarOwnershipVerification />}
-                />
-                <Route
-                  path="verify/drivinglicence"
-                  element={<DrivingLicenceVerif />}
-                />
-              </Routes>
-            </div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/addcar" element={<AddCar />} />
+              <Route path="details/:id" element={<CarDetails />} />
+              <Route path="mylistings" element={<Listings />} />
+              <Route path="bookings/owner" element={<OwnerBookings />} />
+              <Route path="bookings/renter" element={<RenterBookings />} />
+              <Route path="mylistings/update/:id" element={<UpdateCar />} />
+              <Route
+                path="verify/cars"
+                element={<CarOwnershipVerification />}
+              />
+              <Route
+                path="verify/drivinglicence"
+                element={<DrivingLicenceVerif />}
+              />
+              <Route
+                path="*"
+                element={<Navigate to="/dashboard" replace={true} />}
+              />
+            </Routes>
           </main>
         </div>
       </div>

@@ -2,23 +2,14 @@ import axios from "axios";
 
 const appURL = "https://localhost:8443/api";
 
-export const ApiClient = (pathUrl: String) => {
-  // const baseURL = ;
+export const ApiClient = axios.create({
+  baseURL: `${appURL}`,
+});
 
-  const apiClient = axios.create({
-    baseURL: `${appURL}${pathUrl}`,
-  });
-  apiClient.interceptors.request.use(
-    (config) => {
-      const token = sessionStorage.getItem("authToken");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-
-  return apiClient;
+export const setApiClientToken = (token: string | null) => {
+  if (token) {
+    ApiClient.defaults.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete ApiClient.defaults.headers.Authorization;
+  }
 };

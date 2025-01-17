@@ -11,12 +11,11 @@ import {
 } from "../interfaces/Verifications";
 
 const pathURL = "/admin";
-const apiClient = ApiClient(pathURL);
 
 const AdminService = {
   getOwnershipRequests: async (): Promise<OwnershipVerification[]> => {
     try {
-      const res = await apiClient.get("/ownership-verification-requests");
+      const res = await ApiClient.get("/ownership-verification-requests");
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -25,7 +24,7 @@ const AdminService = {
 
   updateCarOwnership: async (carId, decision): Promise<Review[]> => {
     try {
-      const res = await apiClient.post(`/verify-car-ownership/${carId}`, null, {
+      const res = await ApiClient.post(`/verify-car-ownership/${carId}`, null, {
         params: {
           isApproved: decision,
         },
@@ -37,7 +36,7 @@ const AdminService = {
   },
   getLicenceRequests: async (): Promise<LicenceVerification[]> => {
     try {
-      const res = await apiClient.get("/driver-verification-requests");
+      const res = await ApiClient.get("/driver-verification-requests");
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -45,7 +44,7 @@ const AdminService = {
   },
   updateLicence: async (userId, decision): Promise<Review[]> => {
     try {
-      const res = await apiClient.post(
+      const res = await ApiClient.post(
         `/verify-driver-license/${userId}`,
         null,
         {

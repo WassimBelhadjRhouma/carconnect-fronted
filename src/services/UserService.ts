@@ -1,9 +1,5 @@
 import { AxiosResponse } from "axios";
 import { ApiClient } from "./apiClient";
-import {
-  BookingStatus,
-  GetBookingsResponse,
-} from "../interfaces/BookingInterfaces";
 import { Review } from "../interfaces/ReviewInterfaces";
 import {
   LicenceVerification,
@@ -11,14 +7,13 @@ import {
 } from "../interfaces/Verifications";
 
 const pathURL = "/users";
-const apiClient = ApiClient(pathURL);
 
 const UserService = {
   addDrivingLicenceRequest: async (
     data: LicenceVerification
   ): Promise<AxiosResponse<any>> => {
     try {
-      const res = await apiClient.post("", {
+      const res = await ApiClient.post("/users", {
         ...data,
       });
       return res;
@@ -28,7 +23,7 @@ const UserService = {
   },
   getOwnershipRequests: async (): Promise<OwnershipVerification[]> => {
     try {
-      const res = await apiClient.get("/ownership-verification-requests");
+      const res = await ApiClient.get("/users/ownership-verification-requests");
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -37,11 +32,15 @@ const UserService = {
 
   updateCarOwnership: async (carId, decision): Promise<Review[]> => {
     try {
-      const res = await apiClient.post(`/verify-car-ownership/${carId}`, null, {
-        params: {
-          isApproved: decision,
-        },
-      });
+      const res = await ApiClient.post(
+        `/users/verify-car-ownership/${carId}`,
+        null,
+        {
+          params: {
+            isApproved: decision,
+          },
+        }
+      );
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -50,7 +49,7 @@ const UserService = {
 
   getStatus: async (): Promise<any> => {
     try {
-      const res = await apiClient.get("/status");
+      const res = await ApiClient.get("/users/status");
       console.log(res.data);
 
       return res.data;

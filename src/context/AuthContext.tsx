@@ -6,9 +6,9 @@ import {
   USER_TYPES,
 } from "../interfaces/AuthInterfaces";
 import UserService from "../services/UserService";
+import { setApiClientToken } from "../services/apiClient";
 
 export interface AuthContextProps {
-  token: string | null;
   user?: any | null; // Replace with your user model
   login: (data: LoginUserData) => Promise<void>;
   logout: () => void;
@@ -22,41 +22,32 @@ export const AuthContext = createContext<AuthContextProps | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [token, setToken] = useState<string | null>(() =>
-    sessionStorage.getItem("authToken")
-  );
-  const [userId, setUserId] = useState<any | null>(() =>
-    sessionStorage.getItem("userId")
-  ); // Replace with your user model
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState<USER_TYPES | null>(null);
   const [status, setStatus] = useState<any | null>(null);
 
   const login = async (data: LoginUserData) => {
+    console.log("i am here ");
+
     try {
-      const { token, userId, role } = await authService.logInUser(data);
-      setToken(token);
-      setUserId(userId);
+      const { token, role } = await authService.logInUser(data);
+      setApiClientToken(token);
+      setIsAuthenticated(true);
       setRole(role);
-      sessionStorage.setItem("authToken", token);
-      console.log(userId);
     } catch (error) {
       throw error;
     }
   };
 
   const logout = () => {
-    sessionStorage.removeItem("authToken");
-    setToken(null);
-    setUserId(null);
+    setIsAuthenticated(false);
+    setApiClientToken(null);
   };
 
-  const isAuthenticated = !!token;
-
   const fetchStatus = async () => {
-    if (!token) return;
+    if (!isAuthenticated) return;
     try {
       const userRole = await UserService.getStatus();
-      console.log(userRole);
       setRole(userRole.role);
       setStatus(userRole.status);
     } catch (error) {
@@ -73,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ token, login, logout, isAuthenticated, status, role }}
+      value={{ login, logout, isAuthenticated, status, role }}
     >
       {children}
     </AuthContext.Provider>
