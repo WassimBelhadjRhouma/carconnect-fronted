@@ -4,11 +4,13 @@ import { Car } from "../interfaces/CarInterfaces";
 import CarService from "../services/carService";
 import CarCard from "../components/car/CarCard";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import LoaderSpinner from "../components/LoaderSpinner";
+import { useState } from "react";
 
 export default function Listings() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
+  const [loader, setloader] = useState(true);
   const {
     data: cars,
     isLoading,
@@ -53,37 +55,33 @@ export default function Listings() {
         {/* Product grid */}
         <section
           aria-labelledby="products-heading"
-          className="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl sm:px-6 lg:px-8"
         >
-          <h2 id="products-heading" className="sr-only">
-            Products
-          </h2>
-
-          <div className="-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
-            {isLoading && "this is loading "}
-            {error && "this is error"}
-            {cars?.map((car) => (
-              <CarCard
-                key={car.id}
-                showButtons={true}
-                deleteCar={deleteCar}
-                car={car}
-              />
-            ))}
-            <div
-              onClick={() => navigate("/dashboard/addcar")}
-              className="group relative border-b border-r flex justify-center border-gray-200 p-4 sm:p-6"
-            >
-              <PlusIcon
-                aria-hidden="true"
-                className={"text-gray-400 size-100 cursor-pointer "}
-              />
-              <div className="pb-4 pt-10 text-center">
-                <h3 className="text-sm font-medium text-gray-900"></h3>
-                <div className="mt-3 flex flex-col items-center"></div>
+          {isLoading && <LoaderSpinner color="primary" />}
+          {error && "this is error"}
+          {!isLoading && (
+            <div className="-mx-px grid grid-cols-2 gap-6 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
+              {cars?.map((car) => (
+                <CarCard
+                  key={car.id}
+                  showButtons={true}
+                  deleteCar={deleteCar}
+                  car={car}
+                />
+              ))}
+              <div
+                onClick={() => navigate("/dashboard/addcar")}
+                className=" flex justify-center items-center border-gray-200 shadow-card   sm-6"
+              >
+                <PlusIcon
+                  aria-hidden="true"
+                  className={
+                    "text-gray-400 hover:text-gray-500 size-70 cursor-pointer "
+                  }
+                />
               </div>
             </div>
-          </div>
+          )}
         </section>
       </main>
     </div>

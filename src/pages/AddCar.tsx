@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CustomInput from "../components/form/CustomInput";
 import { Car } from "../interfaces/CarInterfaces";
 import { fileToBase64 } from "../utils/FileTransfer";
+import LoaderSpinner from "../components/LoaderSpinner";
 
 interface IFormInputs {
   title: string;
@@ -74,7 +75,7 @@ export default function App() {
     resolver: zodResolver(AddCarSchema),
     mode: "onTouched",
   });
-  const onSubmit: SubmitHandler<IFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
     const backImage = data.backImage;
     const frontImage = data.frontImage;
     delete data.backImage;
@@ -118,24 +119,22 @@ export default function App() {
         ...errorsDisplay,
       });
     }
-
-    CarService.addCar(allData)
-      .then((res) => {
-        if (res.status == 200) setViewModal(true);
-      })
-      .catch((err) => {
-        if (err.status == 500) {
-          setErrorDetails((oldVal) => {
-            return {
-              show: true,
-              errorList: [""],
-              errorTitle: "Server connection problem",
-            };
-          });
-          targetRefScroll.current.scrollIntoView({ behavior: "smooth" });
-        }
-        console.log(err);
+    try {
+      setIsLoading(true);
+      const res = await CarService.addCar(allData);
+      setViewModal(true);
+    } catch (err) {
+      setErrorDetails((oldVal) => {
+        return {
+          show: true,
+          errorList: [""],
+          errorTitle: "Server connection problem",
+        };
       });
+      targetRefScroll.current.scrollIntoView({ behavior: "smooth" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFileChange = (event) => {
@@ -252,7 +251,7 @@ export default function App() {
                 rows={3}
                 className={`${
                   errors.description ? inputStyles.error : ""
-                } block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
+                } block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  focus:ring-inset focus:ring-1 focus:ring-gray-200 sm:text-sm/6`}
                 defaultValue={""}
               />
             </div>
@@ -486,7 +485,7 @@ export default function App() {
                 aria-describedby="price-currency"
                 className={`${
                   errors.pricePerDay ? inputStyles.error : ""
-                }   block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
+                }   block w-full rounded-md border-0 py-2.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
               />
 
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -548,9 +547,9 @@ export default function App() {
           onClick={handleSubmit(onSubmit)}
           type="button"
           // disabled={!showYear || !isValid}
-          className={`flex justify-center rounded-md  mt-9 mb-3 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonStyles.valid}`}
+          className={`flex justify-center rounded-md  mt-9 mb-3 px-5 py-2  font-semibold text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${buttonStyles.valid}`}
         >
-          Submit
+          {isLoading ? <LoaderSpinner color="white" /> : "Submit"}
         </button>
       </form>
     </div>

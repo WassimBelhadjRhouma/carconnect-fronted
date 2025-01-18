@@ -19,7 +19,7 @@ const CustomInput = ({
       >
         {labelText}
       </label>
-      <div className="mt-2">
+      <div className="">
         <input
           disabled={disabled}
           id={label}

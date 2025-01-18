@@ -62,7 +62,7 @@ const Modal = ({ title, textButton, navigateTo, children }) => {
               <button
                 type="button"
                 onClick={() => SubmitHandler()}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="inline-flex w-full justify-center rounded-md  bg-primary text-white px-3 py-2 text-sm font-semibold shadow-sm hover:bg-white hover:text-black border border-black transition duration-300 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 {textButton}
               </button>

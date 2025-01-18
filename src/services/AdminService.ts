@@ -15,7 +15,9 @@ const pathURL = "/admin";
 const AdminService = {
   getOwnershipRequests: async (): Promise<OwnershipVerification[]> => {
     try {
-      const res = await ApiClient.get("/ownership-verification-requests");
+      const res = await ApiClient.get(
+        `${pathURL}/ownership-verification-requests`
+      );
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -24,11 +26,15 @@ const AdminService = {
 
   updateCarOwnership: async (carId, decision): Promise<Review[]> => {
     try {
-      const res = await ApiClient.post(`/verify-car-ownership/${carId}`, null, {
-        params: {
-          isApproved: decision,
-        },
-      });
+      const res = await ApiClient.post(
+        `${pathURL}/verify-car-ownership/${carId}`,
+        null,
+        {
+          params: {
+            isApproved: decision,
+          },
+        }
+      );
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -36,7 +42,9 @@ const AdminService = {
   },
   getLicenceRequests: async (): Promise<LicenceVerification[]> => {
     try {
-      const res = await ApiClient.get("/driver-verification-requests");
+      const res = await ApiClient.get(
+        `${pathURL}/driver-verification-requests`
+      );
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -45,7 +53,7 @@ const AdminService = {
   updateLicence: async (userId, decision): Promise<Review[]> => {
     try {
       const res = await ApiClient.post(
-        `/verify-driver-license/${userId}`,
+        `${pathURL}/verify-driver-license/${userId}`,
         null,
         {
           params: {

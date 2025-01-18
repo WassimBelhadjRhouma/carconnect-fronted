@@ -11,6 +11,7 @@ import LoaderSpinner from "../components/LoaderSpinner";
 import { authService } from "../services/authService";
 import { CustomResponse } from "../utils/ErrorHandler";
 import ResponseBox, { statusEnum } from "../components/form/ResponseBox";
+import Showscase from "../components/Showcase";
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -137,13 +138,7 @@ const SignUp: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="relative hidden w-0 flex-1 lg:block">
-          <img
-            alt=""
-            src="https://plus.unsplash.com/premium_photo-1681965893732-0c6bf9f0841e?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className="absolute inset-0 size-full object-cover"
-          />
-        </div>
+        <Showscase />
       </div>
     </>
   );
