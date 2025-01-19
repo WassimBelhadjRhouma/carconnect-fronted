@@ -12,9 +12,22 @@ import {
 } from "../interfaces/BookingInterfaces";
 import { DocumentIcon } from "@heroicons/react/24/outline";
 import BookingSection from "../components/booking/BookingSection";
+import cx from "clsx";
+
+enum TabType {
+  BOOKING_REQUESTS = "Booking Requests",
+  ONGOING_BOOKINGS = "Ongoing Bookings",
+  HISTORY = "History",
+}
 
 export default function OwnerBookings() {
   const queryClient = useQueryClient();
+  const tabs = [
+    { id: 1, name: TabType.BOOKING_REQUESTS },
+    { id: 2, name: TabType.ONGOING_BOOKINGS },
+    { id: 3, name: TabType.HISTORY },
+  ];
+  const [currentTab, setCurrentTab] = useState(tabs[0]);
 
   const {
     data: bookings,
@@ -65,49 +78,72 @@ export default function OwnerBookings() {
 
   return (
     <div className="bg-white">
+      <div className="flex justify-center items-center text-center cursor-pointer">
+        {tabs.map((tab) => (
+          <div
+            key={tab.id}
+            className={cx(
+              "px-10 py-3 border rounded-sm bg-none text-black hover:bg-gray-50  transition ease-out duration-200",
+              `${
+                currentTab.id === tab.id &&
+                "bg-primary text-white hover:bg-primary hover:text-white"
+              }`
+            )}
+            onClick={() => setCurrentTab(tab)}
+          >
+            {tab.name}
+          </div>
+        ))}
+      </div>
       <div className="py-16 sm:py-24">
         {/* booking requests */}
 
-        <BookingSection
-          bookingType={BookingTypes.OWNER}
-          title="Booking Requests"
-          text="we’ve got your ongoing bookings covered! Check their progress
+        {currentTab.name === TabType.BOOKING_REQUESTS && (
+          <BookingSection
+            bookingType={BookingTypes.OWNER}
+            title="Booking Requests"
+            text="we’ve got your ongoing bookings covered! Check their progress
               here, and reach out if you need a hand."
-          bookings={pendingBookings}
-          updateBooking={updateBooking}
-        >
-          <EnvelopeIcon aria-hidden="true" className="size-10 text-green-600" />
-        </BookingSection>
-
-        <BookingSection
-          bookingType={BookingTypes.OWNER}
-          title="Ongoing Bookings"
-          text="we’ve got your ongoing bookings covered! Check their progress
+            bookings={pendingBookings}
+            updateBooking={updateBooking}
+          >
+            <EnvelopeIcon
+              aria-hidden="true"
+              className="size-10 text-gray-700"
+            />
+          </BookingSection>
+        )}
+        {currentTab.name === TabType.ONGOING_BOOKINGS && (
+          <BookingSection
+            bookingType={BookingTypes.OWNER}
+            title="Ongoing Bookings"
+            text="we’ve got your ongoing bookings covered! Check their progress
               here, and reach out if you need a hand."
-          bookings={confirmedBookings}
-          updateBooking={updateBooking}
-        >
-          <ArrowPathIcon
-            aria-hidden="true"
-            className="size-10 text-green-900"
-          />
-        </BookingSection>
-
+            bookings={confirmedBookings}
+            updateBooking={updateBooking}
+          >
+            <ArrowPathIcon
+              aria-hidden="true"
+              className="size-10 text-green-900"
+            />
+          </BookingSection>
+        )}
         {/*History */}
-
-        <BookingSection
-          bookingType={BookingTypes.OWNER}
-          title="History"
-          text="look back on your past reservations and keep track of everything
+        {currentTab.name === TabType.HISTORY && (
+          <BookingSection
+            bookingType={BookingTypes.OWNER}
+            title="History"
+            text="look back on your past reservations and keep track of everything
                 with ease."
-          bookings={completedBookings}
-          updateBooking={updateBooking}
-        >
-          <ArrowPathIcon
-            aria-hidden="true"
-            className="size-10 text-green-900"
-          />
-        </BookingSection>
+            bookings={completedBookings}
+            updateBooking={updateBooking}
+          >
+            <ArrowPathIcon
+              aria-hidden="true"
+              className="size-10 text-green-900"
+            />
+          </BookingSection>
+        )}
       </div>
     </div>
   );

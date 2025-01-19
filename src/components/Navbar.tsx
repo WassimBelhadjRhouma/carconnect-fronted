@@ -53,7 +53,7 @@ const adminLinks = [
 
 export default function Navbar() {
   const [current, setCurrent] = useState("Home");
-  const { logout } = useAuth();
+  const { logout, userName } = useAuth();
   const [viewModal, setViewModal] = useState(false);
   const [isVisited, setIsVisited] = useState(false);
   const clearModal = () => {
@@ -114,7 +114,9 @@ export default function Navbar() {
           </ul>
         </li>
         <li>
-          <div className="text-xs/6 font-bold text-darkblue">Hi Wassim !</div>
+          <div className="text-xs/6 font-bold text-darkblue">
+            Hi {userName} !
+          </div>
           <ul role="list" className=" mt-2 space-y-1">
             <li className=" items-center flex gap-x-3 text-sm/6 font-semibold">
               {/* For Verified user  */}

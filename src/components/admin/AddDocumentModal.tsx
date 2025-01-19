@@ -105,8 +105,6 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
     });
   };
   const modalHandler = () => {
-    console.log("visiteeeeeeeeeeeeeeeeed");
-
     updateStatus();
     setOpen(false);
     clearModal();
@@ -115,8 +113,7 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
   const onSubmit: SubmitHandler<LicenceVerification> = async (data) => {
     setIsLoading(true);
     try {
-      // const response = await UserService.addDrivingLicenceRequest(data);
-      // console.log(response);
+      const response = await UserService.addDrivingLicenceRequest(data);
       notifySuccess();
       setIsSuccess(true);
     } catch (error) {

@@ -8,16 +8,11 @@ import {
 } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
 import BookingService from "../../services/bookingService";
 import { buttonStyles } from "../../utils/style/validationFormStyles";
 import LoaderSpinner from "../LoaderSpinner";
 import ResponseBox, { statusEnum } from "../form/ResponseBox";
-import { AvailabilityDate } from "../../interfaces/BookingInterfaces";
-import { useQuery } from "@tanstack/react-query";
-import CarService from "../../services/carService";
 import Calendar from "../booking/Calendar";
-import { getDatesInRange } from "../../utils/CalendarCalc";
 import useBlockedDates from "../../hooks/useBlockedDates";
 
 const ModalReservation = ({ carId, handleModal }) => {
@@ -104,12 +99,12 @@ const ModalReservation = ({ carId, handleModal }) => {
                 )}
               </div>
               <div className="mt-2">
-                <Calendar
+                {/* <Calendar
                   blockedDates={blockedDates}
                   handleStartDate={handleStartDate}
                   handleEndDate={handleEndDate}
                   handleCalendarError={handleCalendarError}
-                />
+                /> */}
                 {/* <p className="text-sm text-gray-500">{content}</p> */}
               </div>
               <div className="sm:mt-5">
@@ -125,7 +120,7 @@ const ModalReservation = ({ carId, handleModal }) => {
                     id="about"
                     name="description"
                     rows={3}
-                    className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
+                    className={`block px-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  placeholder:text-gray-400 focus:ring-2 `}
                     onChange={(e) => setMessage(e.target.value)}
                   />
                 </div>

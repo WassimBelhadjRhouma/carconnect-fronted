@@ -20,8 +20,10 @@ const BookingSection: React.FC<BookingCardProps> = ({
   updateBooking,
   bookingType,
 }) => {
+  console.log("urrent boooking:", bookings);
+
   return (
-    <div className="mt-16">
+    <div>
       <div className="mx-auto  max-w-7xl sm:px-2 lg:px-8">
         <div className="mx-auto max-w-2xl px-4 lg:max-w-4xl lg:px-0">
           <div className="flex items-center space-x-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -35,16 +37,21 @@ const BookingSection: React.FC<BookingCardProps> = ({
       </div>
       <div className="mt-10">
         <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
-          <div className="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
-            {bookings?.map((booking) => (
-              <BookingCard
-                bookingType={bookingType}
-                booking={booking}
-                key={booking.id}
-                updateBooking={updateBooking}
-              />
-            ))}
-          </div>
+          {
+            <div className="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
+              {bookings?.length === 0 && (
+                <p className="text-gray-400"> No Bookings to display</p>
+              )}
+              {bookings?.map((booking) => (
+                <BookingCard
+                  bookingType={bookingType}
+                  booking={booking}
+                  key={booking.id}
+                  updateBooking={updateBooking}
+                />
+              ))}
+            </div>
+          }
         </div>
       </div>
     </div>

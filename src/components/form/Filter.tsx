@@ -64,7 +64,7 @@ const Filter = ({ setSelectedFilters }) => {
     <Disclosure
       as="section"
       aria-labelledby="filter-heading"
-      className="grid items-center border-b border-t border-gray-200"
+      className="grid my-8 items-center border-b border-t border-gray-200"
     >
       <h2 id="filter-heading" className="sr-only">
         Filters

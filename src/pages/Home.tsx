@@ -42,7 +42,7 @@ export default function Example() {
       <ToastContainer />
 
       <main className="pb-24">
-        <div className="px-4 py-16 text-center sm:px-6 lg:px-8">
+        <div className="px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">
             Available cars
           </h1>
@@ -59,9 +59,11 @@ export default function Example() {
           aria-labelledby="products-heading"
           className="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8"
         >
-          <h2 id="products-heading">{cars?.length} Result</h2>
+          <h1 className="font-semibold text-xl text-gray-800 mb-9">
+            {cars?.length} Result
+          </h1>
 
-          <div className="-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
+          <div className="-mx-px gap-8 grid bg-gray-100 bg-opacity-5 grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
             {cars?.map((car) => (
               <CarCard key={car.id} car={car} />
             ))}
