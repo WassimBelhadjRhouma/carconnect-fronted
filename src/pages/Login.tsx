@@ -14,9 +14,9 @@ import { useAuth } from "../hooks/useAuth";
 import Showscase from "../components/Showcase";
 
 const Login: React.FC = () => {
-  const { user, login } = useAuth(); // Access values and functions provided by the hook
-
+  const { login } = useAuth(); // Access values and functions provided by the hook
   const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState<null | CustomResponse>(null);
   const {

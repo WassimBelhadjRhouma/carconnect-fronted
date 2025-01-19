@@ -53,7 +53,7 @@ const CarCard: React.FC<ComponentProps> = ({
         />
       }
 
-      <div className="px-4">
+      <div className="px-4 mb-2">
         <div className="flex py-3 items-center justify-between text-center">
           <span className="text-sm  font-semibold text-gray-900">
             {car.title.length > 20 ? car.title.slice(0, 21) + "..." : car.title}
@@ -77,7 +77,7 @@ const CarCard: React.FC<ComponentProps> = ({
         </div>
       </div>
       <div>
-        {showButtons && (
+        {showButtons && car.verificationStatus !== CarStatus.REFUSED && (
           <button
             onClick={() => deleteCar(car.id)}
             type="button"
@@ -86,6 +86,7 @@ const CarCard: React.FC<ComponentProps> = ({
             delete{" "}
           </button>
         )}
+
         {!showButtons && (
           <button
             onClick={() => navigate(`details/${car.id}`)}

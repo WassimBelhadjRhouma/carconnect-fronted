@@ -21,6 +21,7 @@ export const authService = {
   logInUser: async (data: LoginUserData): Promise<LoginResponse> => {
     try {
       const response = await axios.post(`${API_URL}/login`, data);
+      console.log("called from hte auth service:", response.data);
 
       return response.data;
     } catch (error: any) {

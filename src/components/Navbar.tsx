@@ -14,8 +14,10 @@ import AddDucumentModal from "./admin/AddDocumentModal";
 import { USER_TYPES } from "../interfaces/AuthInterfaces";
 import {
   ArrowLeftStartOnRectangleIcon,
+  ClockIcon,
   IdentificationIcon,
 } from "@heroicons/react/20/solid";
+import { USER_STATUS } from "../interfaces/UserInterfaces";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
@@ -116,7 +118,7 @@ export default function Navbar() {
           <ul role="list" className=" mt-2 space-y-1">
             <li className=" items-center flex gap-x-3 text-sm/6 font-semibold">
               {/* For Verified user  */}
-              {status == "ACCEPTED" && role != USER_TYPES.ADMIN && (
+              {status == USER_STATUS.ACCEPTED && role != USER_TYPES.ADMIN && (
                 <>
                   <div>
                     <CheckBadgeIcon
@@ -127,25 +129,38 @@ export default function Navbar() {
                   <span className="font-medium">Verified Profile</span>
                 </>
               )}
-
-              {/* For Unverified user */}
-              {status == "NOTVERIFIED" && role != USER_TYPES.ADMIN && (
+              {/* For Pending user  */}
+              {status == USER_STATUS.PENDING && role != USER_TYPES.ADMIN && (
                 <>
                   <div>
-                    <IdentificationIcon
+                    <ClockIcon
                       aria-hidden="true"
-                      onClick={() => setViewModal(true)}
-                      className="size-5 cursor-pointer text-purple-700"
+                      className="size-5 text-gray-600"
                     />
                   </div>
-                  <span
-                    onClick={() => setViewModal(true)}
-                    className="font-medium text-gray-700 underline cursor-pointer"
-                  >
-                    Verify Your Profile
-                  </span>
+                  <span className="font-medium">Under Review</span>
                 </>
               )}
+
+              {/* For Unverified user */}
+              {status == USER_STATUS.NOTVERIFIED &&
+                role != USER_TYPES.ADMIN && (
+                  <>
+                    <div>
+                      <IdentificationIcon
+                        aria-hidden="true"
+                        onClick={() => setViewModal(true)}
+                        className="size-5 cursor-pointer text-purple-700"
+                      />
+                    </div>
+                    <span
+                      onClick={() => setViewModal(true)}
+                      className="font-medium text-gray-700 underline cursor-pointer"
+                    >
+                      Verify Your Profile
+                    </span>
+                  </>
+                )}
             </li>
           </ul>
         </li>

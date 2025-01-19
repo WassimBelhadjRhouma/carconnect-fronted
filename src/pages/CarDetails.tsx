@@ -9,6 +9,11 @@ import { Car } from "../interfaces/CarInterfaces";
 import ReviewCard from "../components/reviewComponent/ReviewCard";
 import ReviewService from "../services/ReviewService";
 import { Review } from "../interfaces/ReviewInterfaces";
+import { useAuth } from "../hooks/useAuth";
+import { USER_STATUS } from "../interfaces/UserInterfaces";
+import AddDucumentModal from "../components/admin/AddDocumentModal";
+import { toast, ToastContainer } from "react-toastify";
+import CustomToast from "../components/CustomToast";
 
 const images = [
   {
@@ -37,9 +42,12 @@ export default function CarDetails() {
   const [hoveredStar, setHoveredStar] = useState(null);
   const [selectedRating, setSelectedRating] = useState(1); // Tracks the clicked star
 
-  const handleModal = (val) => {
-    setShowModal(val);
+  const { status } = useAuth();
+
+  const handleModal = () => {
+    setShowModal(false);
   };
+  console.log("status:", status);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -71,9 +79,46 @@ export default function CarDetails() {
     fetchReviews();
   }, []);
 
+  useEffect(() => {}, [status]);
+
+  const notifySuccess = () => {
+    toast(CustomToast, {
+      position: "bottom-right",
+      progress: 0.86,
+      data: {
+        title: "Documents Under Review",
+        content:
+          "Your documents are being reviewed by our team. Once the review is complete, you’ll be able to proceed with reserving a car. Thank you for your patience!",
+      },
+      ariaLabel:
+        "Your documents are being reviewed by our team. Once the review is complete, you’ll be able to proceed with reserving a car. Thank you for your patience!",
+    });
+  };
+
+  const handleClickButton = () => {
+    console.log(status);
+
+    if (status == USER_STATUS.PENDING) {
+      notifySuccess();
+    } else {
+      setShowModal(true);
+    }
+  };
   return (
     <div className="bg-white">
-      {showModal && <ModalReservation carId={id} handleModal={handleModal} />}
+      {showModal && status === USER_STATUS.ACCEPTED && (
+        <ModalReservation carId={id} handleModal={handleModal} />
+      )}
+      {showModal && status === USER_STATUS.NOTVERIFIED && (
+        <AddDucumentModal
+          viewModal={showModal}
+          clearModal={handleModal}
+          title={"Verify Your Account"}
+          textButton={"Verify Account"}
+          navigateTo={""}
+        />
+      )}
+      {status === USER_STATUS.PENDING && <ToastContainer />}
       <div className="pt-6">
         {/* Image gallery */}
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
@@ -102,7 +147,7 @@ export default function CarDetails() {
         </div>
 
         {/* Product info */}
-        <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
+        <div className="mx-auto max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:py-12">
           <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
               {car?.title}
@@ -144,23 +189,16 @@ export default function CarDetails() {
 
             <div>
               <button
-                onClick={() => setShowModal(true)}
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={handleClickButton}
+                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-white font-medium text-white hover:bg-gray-900 "
               >
                 Reserve
               </button>
             </div>
           </div>
 
-          <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
+          <div className=" lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
             {/* Description and details */}
-            <div>
-              <h3 className="sr-only">Description</h3>
-
-              <div className="space-y-6">
-                <p className="text-base text-gray-900">{car?.description}</p>
-              </div>
-            </div>
 
             <div className="mt-10">
               <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
@@ -180,30 +218,30 @@ export default function CarDetails() {
               <h2 className="text-sm font-medium text-gray-900">Details</h2>
 
               <div className="mt-4 space-y-6">
-                <p className="text-sm text-gray-600">
-                  Pick up location: {car?.streetAddress}, {car?.postalCode}{" "}
-                  {car?.city}
-                </p>
+                <p className="text-sm text-gray-600">{car?.description}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {reviews && (
-        <div className="bg-white">
-          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-            <h2 className="text-lg font-medium text-gray-900">
-              Recent reviews
-            </h2>
-            <div className="mt-6 space-y-10 divide-y divide-gray-200 border-b border-t border-gray-200 pb-10">
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6  lg:max-w-7xl lg:px-8">
+          <h2 className="text-lg font-medium text-gray-900">Recent reviews</h2>
+          {reviews?.length > 0 ? (
+            <div className="space-y-10 divide-y divide-gray-200 border-b border-t border-gray-200 pb-10">
               {reviews.map((review) => (
                 <ReviewCard key={review.id} review={review} />
               ))}
             </div>
-          </div>
+          ) : (
+            <p className=" mt-5 text-gray-500">
+              {" "}
+              No reviews available at the moment.
+            </p>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

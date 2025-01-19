@@ -17,6 +17,9 @@ import { LicenceVerification } from "../../interfaces/Verifications";
 import { VerifyLicenceSchema } from "../../schemas/VerifyLicenceSchema";
 import LoaderSpinner from "../LoaderSpinner";
 import UserService from "../../services/UserService";
+import { useAuth } from "../../hooks/useAuth";
+import { toast, ToastContainer } from "react-toastify";
+import CustomToast from "../CustomToast";
 
 interface MyComponentProps {
   title: string;
@@ -29,18 +32,19 @@ interface MyComponentProps {
 const AddDucumentModal: React.FC<MyComponentProps> = ({
   title,
   textButton,
-  navigateTo,
   viewModal,
   clearModal,
 }) => {
-  const navigate = useNavigate();
+  const { updateStatus } = useAuth();
+
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [frontImageName, setFrontImageName] = useState(null);
   const [backImageName, setBackImageName] = useState(null);
   const [requestSent, setRequestSent] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const {
-    register,
     formState: { errors, isValid },
     handleSubmit,
     setValue,
@@ -72,24 +76,54 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
   };
   console.log(frontImageName);
 
-  const modalHandler = async () => {
+  const notifyError = () => {
+    toast.error(CustomToast, {
+      position: "bottom-right",
+
+      data: {
+        title: "Netweork error!",
+        content: "Something went wrong",
+      },
+      ariaLabel: "Something went wrong",
+      onClose: () => modalHandler(),
+    });
+  };
+  const notifySuccess = () => {
+    toast(CustomToast, {
+      position: "bottom-right",
+
+      data: {
+        title: "Documents Submitted Successfully!",
+        content:
+          "Our team is reviewing your documents and will get back to you shortly.",
+      },
+      ariaLabel:
+        "Our team is reviewing your documents and will get back to you shortly.",
+      onClose: () => {
+        modalHandler();
+      },
+    });
+  };
+  const modalHandler = () => {
+    console.log("visiteeeeeeeeeeeeeeeeed");
+
+    updateStatus();
     setOpen(false);
     clearModal();
     // navigate(navigateTo);
   };
-
   const onSubmit: SubmitHandler<LicenceVerification> = async (data) => {
     setIsLoading(true);
     try {
-      const response = await UserService.addDrivingLicenceRequest(data);
-      console.log(response);
-      setRequestSent(true);
+      // const response = await UserService.addDrivingLicenceRequest(data);
+      // console.log(response);
+      notifySuccess();
+      setIsSuccess(true);
     } catch (error) {
+      notifyError();
     } finally {
       setIsLoading(false);
     }
-
-    console.log("Now it;s submited");
   };
 
   useEffect(() => {
@@ -102,6 +136,8 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
       onClose={() => modalHandler()}
       className="relative z-10"
     >
+      <ToastContainer />
+
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
@@ -196,10 +232,11 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
             <div className="mt-5 sm:mt-6">
               <button
                 type="button"
+                disabled={requestSent}
                 onClick={handleSubmit(onSubmit)}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className=" inline-flex w-full justify-center rounded-md bg-white text-primary px-3 py-2 text-sm font-semibold shadow-sm border border-black transition ease-in-out duration-300 hover:bg-gray-100 "
               >
-                {isLoading ? <LoaderSpinner color="white" /> : textButton}
+                {isLoading ? <LoaderSpinner color="primary" /> : textButton}
               </button>
             </div>
           </DialogPanel>

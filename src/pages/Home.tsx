@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CarService from "../services/carService";
 import Filter from "../components/form/Filter";
 import { useQuery } from "@tanstack/react-query";
 import { Car } from "../interfaces/CarInterfaces";
 import CarCard from "../components/car/CarCard";
+import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../hooks/useAuth";
+import React from "react";
 
 export default function Example() {
   const [selectedFilters, setSelectedFilters] = useState({});
 
+  const { desactivateWelcomeMSG, showWolcome, userName } = useAuth();
   const {
     data: cars,
     isLoading,
@@ -18,9 +22,24 @@ export default function Example() {
     queryFn: () => CarService.getCars(selectedFilters),
   });
 
+  const notify = () => {
+    toast(`Welcome Back ${userName}`, {
+      onOpen: () => desactivateWelcomeMSG(),
+      // onClose: (reason?: boolean | string) => desactivateWelcomeMSG(),
+      pauseOnFocusLoss: false,
+    });
+  };
+  useEffect(() => {
+    if (showWolcome) {
+      notify();
+    }
+  }, []);
+  console.log("cars:", cars);
+
   return (
     <div className="bg-white">
       {/* Mobile menu */}
+      <ToastContainer />
 
       <main className="pb-24">
         <div className="px-4 py-16 text-center sm:px-6 lg:px-8">

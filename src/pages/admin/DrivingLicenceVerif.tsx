@@ -17,7 +17,7 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
       setIsLoading(true);
       try {
         const response = await AdminService.getLicenceRequests();
-        console.log(response);
+        console.log("verif", response);
         setVerifications(response);
       } catch (err) {
         console.log(err);
@@ -31,7 +31,6 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
   const updateVerification = async (userId, decision) => {
     try {
       const res = AdminService.updateLicence(userId, decision);
-      console.log(res);
       setVerifications((prevVal) =>
         prevVal.map((verification) =>
           verification.userId === userId
