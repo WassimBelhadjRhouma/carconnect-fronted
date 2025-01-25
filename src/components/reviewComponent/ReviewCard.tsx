@@ -1,17 +1,6 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
-import ReviewService from "../../services/ReviewService";
 import { Review } from "../../interfaces/ReviewInterfaces";
-import classNames from "classnames";
 import dayjs from "dayjs";
 
 interface MyComponentProps {
@@ -55,10 +44,7 @@ const ReviewCard: React.FC<MyComponentProps> = ({ review }) => {
 
       <div className="mt-6 flex items-center text-sm lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:flex-col lg:items-start xl:col-span-3">
         <p className="font-medium text-gray-900">{review.userName}</p>
-        <time
-          // dateTime={review.datetime}
-          className="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0"
-        >
+        <time className="ml-4 border-l border-gray-200 pl-4 text-gray-500 lg:ml-0 lg:mt-2 lg:border-0 lg:pl-0">
           {dayjs(review.submittedAt).format("MMMM D, YYYY")}
         </time>
       </div>

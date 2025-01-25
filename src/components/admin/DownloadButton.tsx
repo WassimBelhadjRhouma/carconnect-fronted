@@ -2,9 +2,8 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 const DownloadButton = ({ base64Image, side }) => {
   const downloadImage = () => {
-    // Extract the Base64 data (remove data URL prefix)
     const base64String = base64Image.split(",")[1];
-    const binaryString = atob(base64String); // Decode Base64 string
+    const binaryString = atob(base64String);
     const len = binaryString.length;
     const bytes = new Uint8Array(len);
 
@@ -12,17 +11,15 @@ const DownloadButton = ({ base64Image, side }) => {
       bytes[i] = binaryString.charCodeAt(i);
     }
 
-    // Create a Blob from the binary data
-    const blob = new Blob([bytes], { type: "image/jpeg" }); // Set MIME type
-    const url = URL.createObjectURL(blob); // Create a URL for the Blob
+    const blob = new Blob([bytes], { type: "image/jpeg" });
+    const url = URL.createObjectURL(blob);
 
-    // Create a temporary anchor element
     const link = document.createElement("a");
     link.href = url;
-    link.download = "downloaded_image.jpg"; // Set the filename
+    link.download = "downloaded_image.jpg";
     document.body.appendChild(link);
-    link.click(); // Trigger download
-    document.body.removeChild(link); // Clean up
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (

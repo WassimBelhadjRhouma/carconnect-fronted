@@ -5,7 +5,6 @@ import {
   SignUpUserData,
 } from "../interfaces/AuthInterfaces";
 import { handleApiError } from "../utils/ErrorHandler";
-import { User } from "../interfaces/UserInterfaces";
 
 const API_URL = "https://localhost:8443/api/auth";
 
@@ -21,20 +20,10 @@ export const authService = {
   logInUser: async (data: LoginUserData): Promise<LoginResponse> => {
     try {
       const response = await axios.post(`${API_URL}/login`, data);
-      console.log("called from hte auth service:", response.data);
 
       return response.data;
     } catch (error: any) {
       throw handleApiError(error);
     }
   },
-};
-
-const userMaker = (data): User => {
-  return {
-    firstName: data.firstName,
-    lastName: data.lastName,
-    email: data.email,
-    userId: data.userId,
-  };
 };

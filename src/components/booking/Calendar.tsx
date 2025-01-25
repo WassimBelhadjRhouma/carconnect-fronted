@@ -1,117 +1,58 @@
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useEffect, useMemo, useState } from "react";
-import dayjs from "dayjs";
-import {
-  DatePicker,
-  DateTimePicker,
-  DateValidationError,
-} from "@mui/x-date-pickers";
-import CarService from "../../services/carService";
-var isSameOrAfter = require("dayjs/plugin/isSameOrAfter");
-// import isSameOrAfter from 'dayjs/plugin/isSameOrAfter' // ES 2015
-
-dayjs.extend(isSameOrAfter);
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { useState } from "react";
+import { addDays, subDays } from "date-fns";
+import { DateRange } from "react-date-range";
+import { addMonths } from "date-fns";
 
 interface ComponentProps {
-  handleStartDate: (date: string | Date) => void; // Callback to handle the start date
-  handleEndDate: (date: string | Date) => void; // Callback to handle the end date
-  clearCalendar?: () => void; // Callback to handle the end date
-  handleCalendarError: (error: boolean) => void; // Callback to handle calendar errors
+  handleStartDate: (date: string | Date) => void;
+  handleEndDate: (date: string | Date) => void;
+  clearCalendar?: () => void;
+  handleCalendarError: (error: boolean) => void;
   blockedDates: string[];
+  months: number;
 }
+
 const Calendar: React.FC<ComponentProps> = ({
   handleStartDate,
   handleEndDate,
-  handleCalendarError,
   blockedDates,
-  clearCalendar,
+  months = 1,
 }) => {
-  const [datesValidated, setDatesValidated] = useState(false);
-  // const [startDate, setStartDate] = useState(dayjs("2025-01-20"));
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [minDate, setMinDate] = useState(null);
+  const [state, setState] = useState([
+    {
+      startDate: subDays(new Date(), 7),
+      endDate: addDays(new Date(), 1),
+      key: "selection",
+    },
+  ]);
 
-  // Add 6 months
-  const sixMonthsLater = Math.floor(
-    (Date.now() + 6 * 30.44 * 24 * 60 * 60 * 1000) / 1000
-  );
+  const handleOnChange = (ranges) => {
+    const { selection } = ranges;
+    handleStartDate(selection.startDate);
+    handleEndDate(selection.endDate);
 
-  const shouldDisableDate = (date) => {
-    // Check if the date matches any of the manually blocked dates
-    return blockedDates.includes(dayjs(date).format("YYYY-MM-DD"));
+    setState([selection]);
   };
 
   return (
     <>
-      <div className="mb-9">
-        {/* Date and time chooser */}
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateTimePicker
-            label="from"
-            disablePast
-            maxDate={dayjs.unix(sixMonthsLater)}
-            value={startDate}
-            onChange={(newValue) => {
-              setStartDate(newValue);
-              setMinDate(dayjs(newValue).add(3, "hour"));
-              handleStartDate(newValue);
-            }}
-          />
-        </LocalizationProvider> */}
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label="From"
-            disablePast
-            // minDate={startDate || minDate}
-            maxDate={dayjs.unix(sixMonthsLater)}
-            value={startDate}
-            shouldDisableDate={shouldDisableDate} // Pass the function to disable dates
-            onChange={(newValue) => {
-              setStartDate(newValue);
-              setMinDate(dayjs(newValue).add(24, "hour"));
-              handleStartDate(newValue);
-            }}
-          />
-        </LocalizationProvider>
+      <div className="mb-9 w-full">
+        <DateRange
+          onChange={handleOnChange}
+          showSelectionPreview={true}
+          moveRangeOnFirstSelection={false}
+          months={1}
+          ranges={state}
+          editableDateInputs={true}
+          showDateDisplay={true}
+          minDate={new Date()}
+          dateDisplayFormat="dd/MM/yyyy"
+          maxDate={addMonths(new Date(), 6)}
+          disabledDates={blockedDates}
+        />
       </div>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          label="To"
-          disablePast
-          minDate={minDate}
-          maxDate={dayjs.unix(sixMonthsLater)}
-          value={endDate}
-          onChange={(newValue) => {
-            setEndDate(newValue);
-            handleEndDate(newValue);
-          }}
-          shouldDisableDate={shouldDisableDate} // Pass the function to disable dates
-          onError={(err) => {
-            if (err) {
-              handleCalendarError(true);
-            } else {
-              handleCalendarError(false);
-            }
-          }}
-        />
-      </LocalizationProvider>
-      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
-          label="To"
-          // disablePast
-          minDate={startDate || minDate}
-          maxDate={dayjs.unix(sixMonthsLater)}
-          value={endDate}
-          minTime={startDate ? dayjs(startDate).add(3, "hour") : null}
-          onChange={(newValue) => {
-            setEndDate(newValue);
-            handleEndDate(newValue);
-          }}
-        />
-      </LocalizationProvider> */}
     </>
   );
 };

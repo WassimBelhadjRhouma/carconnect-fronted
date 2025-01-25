@@ -2,8 +2,6 @@ import { ReactElement } from "react";
 import DashboardLayout from "../pages/DashboardLayout";
 import Login from "../pages/Login";
 import SignUp from "../pages/signup";
-import CarOwnershipVerification from "../pages/admin/CarOwnershipVerification";
-import DrivingLicenceVerif from "../pages/admin/DrivingLicenceVerif";
 
 export const PATHS = {
   public: {

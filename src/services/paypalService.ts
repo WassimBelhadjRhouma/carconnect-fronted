@@ -1,19 +1,18 @@
 import axios from "axios";
-import { Buffer } from "buffer"; // Import the Buffer polyfill
+import { Buffer } from "buffer";
 
-const PAYPAL_BASE_URL = "https://api-m.sandbox.paypal.com"; // Sandbox URL
+const PAYPAL_BASE_URL = "https://api-m.sandbox.paypal.com";
 
-// Generate access token
-const clientId = process.env.REACT_APP_PAYPAL_CLIENT_ID; // Replace with your actual Client ID
-const clientSecret = process.env.REACT_APP_PAYPAL_SECRET_KEY; // Replace with your actual Client Secret
+const clientId = process.env.REACT_APP_PAYPAL_CLIENT_ID;
+const clientSecret = process.env.REACT_APP_PAYPAL_SECRET_KEY;
 
 export const getAccessToken = async () => {
-  const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64"); // Base64 encode credentials
+  const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
   try {
     const response = await axios.post(
       "https://api-m.sandbox.paypal.com/v1/oauth2/token",
-      "grant_type=client_credentials", // Body content
+      "grant_type=client_credentials",
       {
         headers: {
           Authorization: `Basic ${auth}`,
@@ -22,8 +21,7 @@ export const getAccessToken = async () => {
       }
     );
 
-    console.log("Access Token:", response.data.access_token);
-    return response.data.access_token; // Use this token for API calls
+    return response.data.access_token;
   } catch (error) {
     console.error(
       "Error fetching access token:",
@@ -74,7 +72,6 @@ export const createOrderApi = async (amount) => {
       }
     );
 
-    console.log("Order Created:", response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -84,7 +81,6 @@ export const createOrderApi = async (amount) => {
   }
 };
 
-// Capture payment
 export const capturePayment = async (accessToken, orderId) => {
   try {
     const response = await axios.post(
@@ -98,7 +94,7 @@ export const capturePayment = async (accessToken, orderId) => {
       }
     );
 
-    return response.data; // Return transaction details
+    return response.data;
   } catch (error) {
     console.error(
       "Error capturing PayPal payment:",
@@ -108,7 +104,6 @@ export const capturePayment = async (accessToken, orderId) => {
   }
 };
 
-// Capture Order
 export const captureOrderApi = async (orderID: string): Promise<any> => {
   const accessToken = await getAccessToken();
 

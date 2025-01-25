@@ -5,9 +5,11 @@ export interface Booking {
   startDate?: string;
   endDate?: string;
   message?: string;
+  amount?: string;
   status?: BookingStatus;
   car?: Car;
   reviewed?: boolean;
+  paid?: boolean;
 }
 export interface GetBookingsResponse {
   ownerRequests: Booking[];

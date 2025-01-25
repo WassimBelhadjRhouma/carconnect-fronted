@@ -20,7 +20,7 @@ const CarService = {
 
   getCars: async (filter): Promise<Car[]> => {
     try {
-      const response = await ApiClient.post(`${pathURL}/filter`, filter); // we used POST because we have the intention to use more advanced filter options, which will be complicated to pass all of them in params.
+      const response = await ApiClient.post(`${pathURL}/filter`, filter);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -55,11 +55,8 @@ const CarService = {
   },
 
   updateCar: async (carId, updates): Promise<AxiosResponse<any>> => {
-    console.log("were here");
-
     try {
       const response = await ApiClient.put(`${pathURL}/${carId}`, updates);
-      console.log("Then here");
 
       return response.data;
     } catch (error) {
@@ -69,8 +66,6 @@ const CarService = {
   getAvailabilities: async (carId): Promise<AvailabilityDate[]> => {
     try {
       const res = await ApiClient.get(`${pathURL}/${carId}/availabilities`);
-      console.log("Availabilities:", res);
-
       return res.data;
     } catch (error) {
       throw new Error(error);

@@ -20,6 +20,7 @@ import UserService from "../../services/UserService";
 import { useAuth } from "../../hooks/useAuth";
 import { toast, ToastContainer } from "react-toastify";
 import CustomToast from "../CustomToast";
+import { buttonStyles } from "../../utils/style/validationFormStyles";
 
 interface MyComponentProps {
   title: string;
@@ -114,6 +115,7 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
     setIsLoading(true);
     try {
       const response = await UserService.addDrivingLicenceRequest(data);
+      setRequestSent(true);
       notifySuccess();
       setIsSuccess(true);
     } catch (error) {
@@ -231,9 +233,11 @@ const AddDucumentModal: React.FC<MyComponentProps> = ({
                 type="button"
                 disabled={requestSent}
                 onClick={handleSubmit(onSubmit)}
-                className=" inline-flex w-full justify-center rounded-md bg-white text-primary px-3 py-2 text-sm font-semibold shadow-sm border border-black transition ease-in-out duration-300 hover:bg-gray-100 "
+                className={` ${buttonStyles.base} ${
+                  requestSent ? buttonStyles.invalid : buttonStyles.valid
+                }`}
               >
-                {isLoading ? <LoaderSpinner color="primary" /> : textButton}
+                {isLoading ? <LoaderSpinner color="white" /> : textButton}
               </button>
             </div>
           </DialogPanel>

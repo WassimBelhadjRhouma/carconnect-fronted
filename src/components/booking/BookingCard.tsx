@@ -4,10 +4,14 @@ import {
   BookingStatus,
   BookingTypes,
 } from "../../interfaces/BookingInterfaces";
-import BookingService from "../../services/bookingService";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReviewModal from "../reviewComponent/ReviewModal";
+import PaymentService from "../../services/PaymentService";
+import { PAYMENT_STATUS } from "../../interfaces/PaymentInterfaces";
+import PaypalComponent from "./PaypalComponent";
+import LoaderSpinner from "../LoaderSpinner";
+import { toast, ToastContainer } from "react-toastify";
+import CustomToast from "../CustomToast";
 
 interface BookingCardProps {
   booking: Booking;
@@ -21,6 +25,54 @@ const BookingCard: React.FC<BookingCardProps> = ({
   updateBooking,
 }) => {
   const [viewModal, setViewModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [paymentSucceed, setPaymentSucceed] = useState(false);
+
+  const handlePaymentSucceed = () => {
+    setPaymentSucceed(true);
+  };
+  const notifyError = () => {
+    toast.error(CustomToast, {
+      position: "bottom-right",
+
+      data: {
+        title: "Netweork error!",
+        content: "Something went wrong",
+      },
+      onClose: () => {},
+
+      ariaLabel: "Something went wrong",
+    });
+  };
+  const notifySuccess = () => {
+    toast(CustomToast, {
+      position: "bottom-right",
+
+      data: {
+        title: "Payment Successful!",
+        content:
+          "Thank you for your payment! The transaction was completed successfully, and your reservation has been confirmed.",
+      },
+      pauseOnFocusLoss: false,
+      ariaLabel:
+        "Thank you for your payment! The transaction was completed successfully, and your reservation has been confirmed.",
+      onClose: () => {},
+    });
+  };
+  const createPayment = async (id) => {
+    try {
+      const res = await PaymentService.createPayment(id);
+      notifySuccess();
+    } catch (err) {
+      console.log(err);
+      notifyError();
+    }
+  };
+  useEffect(() => {
+    if (paymentSucceed) {
+      createPayment(booking.id);
+    }
+  }, [paymentSucceed]);
 
   const clearModal = () => {
     setViewModal(false);
@@ -28,9 +80,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div
-      key={booking.id}
+      key={booking?.id}
       className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
     >
+      <ToastContainer />
       {viewModal && (
         <ReviewModal
           bookingId={booking.id}
@@ -50,15 +103,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
           </div>
           <div className="hidden sm:block">
             <dt className="font-medium text-gray-900">To</dt>
-            <dd className="mt-1 text-gray-500">
-              {/* <time dateTime={order.createdDatetime}>{order.createdDate}</time> */}
-              {booking.endDate}
-            </dd>
+            <dd className="mt-1 text-gray-500">{booking.endDate}</dd>
           </div>
           <div>
             <dt className="font-medium text-gray-900">Total amount</dt>
             <dd className="mt-1 font-medium text-gray-900">
-              € {booking.car.pricePerDay}
+              € {booking.amount}
             </dd>
           </div>
         </dl>
@@ -78,7 +128,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
             </div>
             <div className="ml-6 flex-1 text-sm">
               <div className="font-medium text-gray-900 sm:flex sm:justify-between">
-                <h5>{booking.car.title}</h5>
+                <h5>
+                  {bookingType === BookingTypes.OWNER
+                    ? "Message from the Renter:"
+                    : "Message "}
+                </h5>
                 <p className="mt-2 sm:mt-0">
                   €{booking.car.pricePerDay}{" "}
                   <span className="text-gray-400 text-xs">/day</span>{" "}
@@ -108,11 +162,28 @@ const BookingCard: React.FC<BookingCardProps> = ({
               )}
 
               <p className="ml-2 text-sm font-medium text-gray-500">
-                {booking.status}
+                {paymentSucceed || booking.paid ? "CONFIRMED" : booking.status}
+                {(booking.paid || paymentSucceed) &&
+                  booking.status === BookingStatus.ACCEPTED &&
+                  ` - ${PAYMENT_STATUS.PAID}`}
+                {!booking?.paid &&
+                  !paymentSucceed &&
+                  booking.status === BookingStatus.ACCEPTED &&
+                  ` - ${PAYMENT_STATUS.UNPAID}`}
               </p>
             </div>
 
             <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:ml-4 sm:mt-0 sm:border-none sm:pt-0">
+              {isLoading && <LoaderSpinner color="primary" text="Loading..." />}
+              {booking.status === BookingStatus.ACCEPTED &&
+                bookingType === BookingTypes.RENTER &&
+                !booking?.paid && (
+                  <PaypalComponent
+                    amount={booking.amount}
+                    handlePaymentSucceed={handlePaymentSucceed}
+                  />
+                )}
+
               {booking.status === BookingStatus.PENDING &&
                 bookingType != BookingTypes.RENTER && (
                   <div className="flex flex-1 justify-center">

@@ -1,16 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
-import { StarIcon } from "@heroicons/react/20/solid";
-import ReviewService from "../../services/ReviewService";
-import { Review } from "../../interfaces/ReviewInterfaces";
 import AdminService from "../../services/AdminService";
 import DownloadButton from "../../components/admin/DownloadButton";
 import { OwnershipVerification } from "../../interfaces/Verifications";
@@ -18,19 +7,6 @@ import dayjs from "dayjs";
 import LoaderSpinner from "../../components/LoaderSpinner";
 
 interface MyComponentProps {}
-const verifications = [
-  {
-    id: "AAPS0L",
-    company: "Chase & Co.",
-    share: "CAC",
-    commission: "+$4.37",
-    price: "$3,509.00",
-    quantity: "12.00",
-    netAmount: "$4,397.00",
-  },
-  // More verifications...
-];
-
 const CarOwnershipVerification: React.FC<MyComponentProps> = ({}) => {
   const [verifications, setVerifications] = useState<OwnershipVerification[]>();
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +16,6 @@ const CarOwnershipVerification: React.FC<MyComponentProps> = ({}) => {
       setIsLoading(true);
       try {
         const response = await AdminService.getOwnershipRequests();
-        console.log(response);
         setVerifications(response);
       } catch (err) {
         console.log(err);
@@ -54,7 +29,6 @@ const CarOwnershipVerification: React.FC<MyComponentProps> = ({}) => {
   const updateVerification = async (carId, decision) => {
     try {
       const res = AdminService.updateCarOwnership(carId, decision);
-      console.log(res);
       setVerifications((prevVal) =>
         prevVal.map((verification) =>
           verification.carId === carId

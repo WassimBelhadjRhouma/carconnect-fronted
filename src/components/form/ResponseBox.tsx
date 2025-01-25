@@ -8,7 +8,7 @@ export enum statusEnum {
 
 type ButtonContent = {
   title: string;
-  onClick: () => void; // Function takes a string and returns a number
+  onClick: () => void;
 };
 
 interface ComponentProps {
@@ -25,7 +25,6 @@ const ResponseBox: React.FC<ComponentProps> = ({
   buttonContent = null,
 }) => {
   const color = status === statusEnum.Error ? "red" : "green";
-  // const color = 'red'
   return (
     <div
       className={`rounded-md  ${

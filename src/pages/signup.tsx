@@ -23,7 +23,7 @@ const SignUp: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<SignUpForm>({
     resolver: zodResolver(SignupSchema),
-    mode: "onChange", // for real-time validation
+    mode: "onChange",
   });
 
   const onSubmit = (data: SignUpForm) => {

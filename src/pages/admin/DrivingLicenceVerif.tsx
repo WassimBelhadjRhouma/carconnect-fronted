@@ -17,7 +17,6 @@ const DrivingLicenceVerif: React.FC<MyComponentProps> = ({}) => {
       setIsLoading(true);
       try {
         const response = await AdminService.getLicenceRequests();
-        console.log("verif", response);
         setVerifications(response);
       } catch (err) {
         console.log(err);

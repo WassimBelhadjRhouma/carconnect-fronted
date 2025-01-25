@@ -7,10 +7,14 @@ import {
 import { captureOrderApi, createOrderApi } from "../../services/paypalService";
 
 interface ComponentProps {
-  amount?: number;
+  amount?: string;
+  handlePaymentSucceed?: () => void;
 }
 
-const PaypalComponent: React.FC<ComponentProps> = ({ amount = 30 }) => {
+const PaypalComponent: React.FC<ComponentProps> = ({
+  amount = 30,
+  handlePaymentSucceed,
+}) => {
   const initialOptions: ReactPayPalScriptOptions = {
     clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID,
     disableFunding: "card",
@@ -48,6 +52,7 @@ const PaypalComponent: React.FC<ComponentProps> = ({ amount = 30 }) => {
   const onApprove: PayPalButtonsComponentProps["onApprove"] = async (data) => {
     try {
       const details = await captureOrderApi(data.orderID);
+      handlePaymentSucceed();
       console.log(details);
     } catch (error) {
       console.error("Error in onApprove:", error);

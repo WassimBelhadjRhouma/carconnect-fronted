@@ -14,7 +14,7 @@ import { useAuth } from "../hooks/useAuth";
 import Showscase from "../components/Showcase";
 
 const Login: React.FC = () => {
-  const { login } = useAuth(); // Access values and functions provided by the hook
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<LoginUserData>({
     resolver: zodResolver(LoginSchema),
-    mode: "onChange", // for real-time validation
+    mode: "onChange",
   });
 
   const onSubmit = async (data: LoginUserData) => {
@@ -33,7 +33,6 @@ const Login: React.FC = () => {
     try {
       await login(data);
       navigate("/dashboard");
-      // setApiResponse({message: "Login successfully", status:200})
     } catch (err) {
       setApiResponse(err);
     } finally {

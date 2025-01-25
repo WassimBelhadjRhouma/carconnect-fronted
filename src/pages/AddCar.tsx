@@ -36,8 +36,6 @@ interface IFormInputs {
   imageDataList: any[];
 }
 export default function App() {
-  const navigate = useNavigate();
-
   const targetRefScroll = useRef<HTMLDivElement>(null);
   const [selectedDrivingMode, setSelectedDrivingMode] = useState(
     drivingModes[0]
@@ -51,7 +49,6 @@ export default function App() {
     errorList: [],
     errorTitle: "",
   });
-  const [showError, setShowError] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedFuel, setSelectedFuel] = useState(fuelTypes[0]);
   const [selectedBrand, setSelectedBrand] = useState(carBrands[0]);
@@ -139,11 +136,10 @@ export default function App() {
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
-    // Convert files to base64 strings
     Promise.all(files.map(fileToBase64))
       .then((base64Images) => {
-        setValue("imageDataList", base64Images, { shouldValidate: true }); // Update the 'images' field in the form
-        setPreviewImages(base64Images); // Set preview for display
+        setValue("imageDataList", base64Images, { shouldValidate: true });
+        setPreviewImages(base64Images);
       })
       .catch((error) => {
         console.error("Error converting images:", error);
@@ -151,9 +147,7 @@ export default function App() {
   };
 
   const handleSingleFileChange = (event) => {
-    console.log(event.target.name);
-
-    const file = event.target.files[0]; // Get the first file
+    const file = event.target.files[0];
 
     if (!file) {
       console.error("No file selected");
@@ -162,10 +156,10 @@ export default function App() {
 
     fileToBase64(file)
       .then((base64Image) => {
-        setValue(event.target.name, base64Image, { shouldValidate: true }); // Save the Base64 string for the image
+        setValue(event.target.name, base64Image, { shouldValidate: true });
         event.target.name === "frontImage"
           ? setFrontImageName(file.name)
-          : setBackImageName(file.name); // Optional: Set the preview image
+          : setBackImageName(file.name);
       })
       .catch((error) => {
         console.error("Error converting the image:", error);
@@ -187,7 +181,6 @@ export default function App() {
   useEffect(() => {
     if (selectedModel.name !== "Select a model") {
       setShowYear(true);
-      console.log("yowyowyoww");
     } else {
       setShowYear(false);
     }

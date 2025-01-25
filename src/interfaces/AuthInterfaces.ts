@@ -1,7 +1,3 @@
-// types/api.ts
-
-import { User } from "./UserInterfaces";
-
 export interface SignUpUserData {
   email: string;
   password: string;

@@ -6,12 +6,7 @@ import { PATHS } from "./routes";
 const PublicRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? (
-    <Navigate to={PATHS.private.DASHBOARD} />
-  ) : (
-    // <Navigate to={PATHS.private.ADMIN_CAR_VERIF} />
-    children
-  );
+  return isAuthenticated ? <Navigate to={PATHS.private.DASHBOARD} /> : children;
 };
 
 export default PublicRoute;

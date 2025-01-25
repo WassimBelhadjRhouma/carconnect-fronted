@@ -25,7 +25,6 @@ export default function Example() {
   const notify = () => {
     toast(`Welcome Back ${userName}`, {
       onOpen: () => desactivateWelcomeMSG(),
-      // onClose: (reason?: boolean | string) => desactivateWelcomeMSG(),
       pauseOnFocusLoss: false,
     });
   };
@@ -34,7 +33,6 @@ export default function Example() {
       notify();
     }
   }, []);
-  console.log("cars:", cars);
 
   return (
     <div className="bg-white">

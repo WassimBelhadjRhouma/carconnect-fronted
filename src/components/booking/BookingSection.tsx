@@ -1,4 +1,3 @@
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/20/solid";
 import { Booking, BookingTypes } from "../../interfaces/BookingInterfaces";
 import { ReactNode } from "react";
 import BookingCard from "./BookingCard";
@@ -20,8 +19,6 @@ const BookingSection: React.FC<BookingCardProps> = ({
   updateBooking,
   bookingType,
 }) => {
-  console.log("urrent boooking:", bookings);
-
   return (
     <div>
       <div className="mx-auto  max-w-7xl sm:px-2 lg:px-8">

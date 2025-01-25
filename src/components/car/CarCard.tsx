@@ -1,11 +1,7 @@
 import { Car, CarStatus } from "../../interfaces/CarInterfaces";
-import {
-  PencilIcon,
-  PencilSquareIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import { PencilSquareIcon, StarIcon } from "@heroicons/react/20/solid";
 import classNames from "classnames";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface ComponentProps {
   car: Car;
@@ -19,9 +15,7 @@ const CarCard: React.FC<ComponentProps> = ({
   deleteCar,
 }) => {
   const navigate = useNavigate();
-  console.log(car);
 
-  // const color = 'red'
   return (
     <div
       key={car.id}

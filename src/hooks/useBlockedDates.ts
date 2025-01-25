@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { getDatesInRange } from "../utils/CalendarCalc";
 import CarService from "../services/carService";
 
-// Custom Hook
 const useBlockedDates = (carId) => {
   const [blockedDates, setBlockedDates] = useState([]);
   const [blockedDatesIntervals, setBlockedDatesIntervals] = useState([]);
@@ -27,7 +26,10 @@ const useBlockedDates = (carId) => {
           );
           unavailableDatesArray.push(...unavailableDatesPart);
         });
-        setBlockedDates(unavailableDatesArray);
+        const typedUnaivailableDatesArray = unavailableDatesArray.map((el) => {
+          return new Date(el);
+        });
+        setBlockedDates(typedUnaivailableDatesArray);
       } catch (err) {
         console.error("Error fetching blocked intervals:", err);
         setError(err);
@@ -49,9 +51,6 @@ const useBlockedDates = (carId) => {
   };
   const addBlockedDateInterval = (intervalToAdd) => {
     setBlockedDatesIntervals((prevIntervals) => {
-      // const updatedIntervals = [];
-      console.log(prevIntervals);
-
       return [...prevIntervals, intervalToAdd];
     });
   };

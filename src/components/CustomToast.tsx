@@ -6,7 +6,7 @@ type CustomNotificationProps = ToastContentProps<{
   title: string;
   content: string;
 }> & {
-  children?: ReactNode; // Add `children` as an optional prop
+  children?: ReactNode;
 };
 
 export default function CustomToast({

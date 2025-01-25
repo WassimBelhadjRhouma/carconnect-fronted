@@ -6,12 +6,9 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { StarIcon } from "@heroicons/react/20/solid";
-import ReviewService from "../../services/ReviewService";
 import { Review } from "../../interfaces/ReviewInterfaces";
-import ReviewStars from "./ReviewStars";
 
 interface MyComponentProps {
   title: string;
@@ -36,24 +33,22 @@ const ReviewModal: React.FC<MyComponentProps> = ({
   const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
 
-  const [hoveredStar, setHoveredStar] = useState(null); // Tracks the hovered star
-  const [selectedRating, setSelectedRating] = useState(1); // Tracks the clicked star
+  const [hoveredStar, setHoveredStar] = useState(null);
+  const [selectedRating, setSelectedRating] = useState(1);
 
   const handleMouseEnter = (index) => {
-    setHoveredStar(index); // Set hovered star
+    setHoveredStar(index);
   };
 
   const handleMouseLeave = () => {
-    setHoveredStar(null); // Reset hover when leaving
+    setHoveredStar(null);
   };
 
   const handleClick = (index) => {
-    setSelectedRating(index); // Set clicked star as the selected rating
+    setSelectedRating(index);
   };
 
   const SubmitHandler = async () => {
-    console.log(selectedRating);
-    console.log(comment);
     const data: Review = {
       comment,
       rating: selectedRating,
@@ -64,17 +59,9 @@ const ReviewModal: React.FC<MyComponentProps> = ({
         id: bookingId,
       },
     };
-    console.log(data);
 
-    // try {
-    //   const res = await ReviewService.addReview(data);
-    //   console.log(res);
-    // } catch (err) {
-    //   console.log(err);
-    // }
     setOpen(false);
     clearModal();
-    // navigate(navigateTo);
   };
 
   useEffect(() => {
@@ -138,24 +125,25 @@ const ReviewModal: React.FC<MyComponentProps> = ({
 
                 <div className="mt-2">
                   <textarea
-                    // {...register("description")}
                     id="about"
                     name="description"
                     rows={3}
-                    className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
+                    className={`block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6`}
                     onChange={(e) => setComment(e.target.value)}
                   />
                 </div>
               </div>{" "}
             </div>
             <div className="mt-5 sm:mt-6">
-              <button
-                type="button"
-                onClick={() => SubmitHandler()}
-                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                {textButton}
-              </button>
+              {
+                <button
+                  type="button"
+                  onClick={() => SubmitHandler()}
+                  className="inline-flex w-full justify-center rounded-md bg-primary text-white px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-900"
+                >
+                  {textButton}
+                </button>
+              }
             </div>
           </DialogPanel>
         </div>

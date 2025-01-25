@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import {
   Dialog,
@@ -7,18 +7,18 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
 import BookingService from "../../services/bookingService";
 import { buttonStyles } from "../../utils/style/validationFormStyles";
 import LoaderSpinner from "../LoaderSpinner";
 import ResponseBox, { statusEnum } from "../form/ResponseBox";
 import Calendar from "../booking/Calendar";
 import useBlockedDates from "../../hooks/useBlockedDates";
+import { format } from "date-fns";
+import { toast, ToastContainer } from "react-toastify";
+import CustomToast from "../CustomToast";
 
 const ModalReservation = ({ carId, handleModal }) => {
-  const navigate = useNavigate();
-
-  const { blockedDates, isLoading, error } = useBlockedDates(carId);
+  const { blockedDates } = useBlockedDates(carId);
 
   const [open, setOpen] = useState(true);
   const [requestSent, setRequestSent] = useState(false);
@@ -27,7 +27,9 @@ const ModalReservation = ({ carId, handleModal }) => {
   const [customError, setCustomError] = useState(null);
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(
+    "I hope this message finds you well. My name is [Your Name], and I am reaching out regarding your car listed for [rental/sale] on [platform name or reference]."
+  );
 
   const handleStartDate = (date) => {
     setStartDate(date);
@@ -39,26 +41,63 @@ const ModalReservation = ({ carId, handleModal }) => {
   const handleCalendarError = (err) => {
     setCustomError(err);
   };
+  const notifyError = () => {
+    toast.error(CustomToast, {
+      position: "bottom-right",
 
+      data: {
+        title: "Netweork error!",
+        content: "Something went wrong",
+      },
+      ariaLabel: "Something went wrong",
+      onClose: () => {
+        handleModal();
+        setOpen(false);
+      },
+    });
+  };
+  const notifySuccess = () => {
+    toast(CustomToast, {
+      position: "bottom-right",
+
+      data: {
+        title: "Reservation Request Sent!",
+        content:
+          "The owner has received your reservation request. You will be notified once they make a decision.",
+      },
+      ariaLabel:
+        "Our team is reviewing your documents and will get back to you shortly.",
+      onClose: () => {
+        {
+          handleModal();
+          setOpen(false);
+        }
+      },
+    });
+  };
   const SubmitHandler = async () => {
-    // setOpen(false);
     setLoading(true);
+    console.log("start date:", format(startDate, "yyyy-MM-dd"));
+
     const data = {
-      startDate: startDate.format("YYYY-MM-DD"),
-      endDate: endDate.format("YYYY-MM-DD"),
+      startDate: format(startDate, "yyyy-MM-dd"),
+      endDate: format(endDate, "yyyy-MM-dd"),
       message,
     };
     BookingService.addBookingRequest(data, carId)
       .then((res) => {
-        // setOpen(false);
+        notifySuccess();
+        setRequestSent(true);
       })
       .catch((err) => {
+        notifyError();
+
         setShowError(true);
-        setLoading(false);
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    // handleModal(false);
-    // navigate(navigateTo);
   };
 
   return (
@@ -70,6 +109,8 @@ const ModalReservation = ({ carId, handleModal }) => {
       }}
       className="relative z-10"
     >
+      <ToastContainer />
+
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
@@ -98,14 +139,14 @@ const ModalReservation = ({ carId, handleModal }) => {
                   />
                 )}
               </div>
-              <div className="mt-2">
-                {/* <Calendar
+              <div className="mt-2 ">
+                <Calendar
                   blockedDates={blockedDates}
                   handleStartDate={handleStartDate}
                   handleEndDate={handleEndDate}
                   handleCalendarError={handleCalendarError}
-                /> */}
-                {/* <p className="text-sm text-gray-500">{content}</p> */}
+                  months={1}
+                />
               </div>
               <div className="sm:mt-5">
                 <label
@@ -116,9 +157,9 @@ const ModalReservation = ({ carId, handleModal }) => {
                 </label>
                 <div className="mt-2">
                   <textarea
-                    // {...register("description")}
                     id="about"
                     name="description"
+                    placeholder="I hope this message finds you well. My name is [Your Name], and I am reaching out regarding your car listed for [rental/sale] on [platform name or reference]."
                     rows={3}
                     className={`block px-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1  placeholder:text-gray-400 focus:ring-2 `}
                     onChange={(e) => setMessage(e.target.value)}
@@ -131,9 +172,19 @@ const ModalReservation = ({ carId, handleModal }) => {
                 <button
                   type="button"
                   onClick={() => SubmitHandler()}
-                  disabled={customError || loading || !startDate || !endDate}
+                  disabled={
+                    customError ||
+                    loading ||
+                    !startDate ||
+                    !endDate ||
+                    requestSent
+                  }
                   className={` ${buttonStyles.base} ${
-                    customError || loading || !startDate || !endDate
+                    customError ||
+                    loading ||
+                    !startDate ||
+                    !endDate ||
+                    requestSent
                       ? buttonStyles.invalid
                       : buttonStyles.valid
                   }`}

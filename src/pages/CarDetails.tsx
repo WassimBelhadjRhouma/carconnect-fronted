@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
-import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
 import CarService from "../services/carService";
 import classNames from "classnames";
 import ModalReservation from "../components/car/ModalReservation";
-import { Car } from "../interfaces/CarInterfaces";
 import ReviewCard from "../components/reviewComponent/ReviewCard";
 import ReviewService from "../services/ReviewService";
 import { Review } from "../interfaces/ReviewInterfaces";
@@ -39,15 +37,12 @@ export default function CarDetails() {
   const [car, setCar] = useState<any>();
   const [showModal, setShowModal] = useState(false);
   const [reviews, setReviews] = useState<Review[]>();
-  const [hoveredStar, setHoveredStar] = useState(null);
-  const [selectedRating, setSelectedRating] = useState(1); // Tracks the clicked star
 
   const { status } = useAuth();
 
   const handleModal = () => {
     setShowModal(false);
   };
-  console.log("status:", status);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -61,7 +56,6 @@ export default function CarDetails() {
             `Mileage: ${res.mileage}`,
           ];
           setCar({ ...res, highlights });
-          console.log(res);
         })
         .catch((err) => console.log(err.message));
     };
@@ -70,7 +64,6 @@ export default function CarDetails() {
       try {
         const res = await ReviewService.getReviews(id);
         setReviews(res);
-        console.log("reviews are", res);
       } catch (error) {
         console.log(error);
       }
@@ -96,8 +89,6 @@ export default function CarDetails() {
   };
 
   const handleClickButton = () => {
-    console.log(status);
-
     if (status == USER_STATUS.PENDING) {
       notifySuccess();
     } else {

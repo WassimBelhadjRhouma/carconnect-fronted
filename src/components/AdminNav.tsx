@@ -1,22 +1,11 @@
 import React, { useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
-
-import classNames from "classnames";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  Menu,
-  MenuItem,
-  MenuItems,
   TransitionChild,
 } from "@headlessui/react";
-import {
-  Bars3Icon,
-  HomeIcon,
-  XMarkIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "../components/Logo";
 
 import Navbar from "../components/Navbar";
@@ -58,7 +47,6 @@ const DashboardLayout: React.FC = () => {
                 </div>
               </TransitionChild>
 
-              {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
                   <Logo></Logo>
@@ -71,7 +59,6 @@ const DashboardLayout: React.FC = () => {
 
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <Logo></Logo>
@@ -90,9 +77,6 @@ const DashboardLayout: React.FC = () => {
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon aria-hidden="true" className="size-6" />
             </button>
-            {/* Separator */}
-
-            {/* <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6"></div> */}
           </div>
 
           <main className="py-10">
@@ -102,8 +86,6 @@ const DashboardLayout: React.FC = () => {
       </div>
     </>
   );
-
-  //////////////////////////////////////////////////////////////////////////////////
 };
 
 export default DashboardLayout;

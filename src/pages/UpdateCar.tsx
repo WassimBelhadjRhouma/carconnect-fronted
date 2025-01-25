@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -23,7 +23,6 @@ interface IFormInputs {
 
 export default function UpdateCar() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -40,7 +39,7 @@ export default function UpdateCar() {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    reset, // To reset the form with fetched values
+    reset,
   } = useForm<IFormInputs>({
     resolver: zodResolver(UpdateCarSchema),
     mode: "onTouched",
@@ -54,8 +53,9 @@ export default function UpdateCar() {
     },
   });
 
-  // Reset form values when car data is fetched
   useEffect(() => {
+    console.log(car);
+
     if (car) {
       reset({
         title: car.title || "",
@@ -93,10 +93,7 @@ export default function UpdateCar() {
         </Modal>
       )}
       <div>
-        <h2
-          // ref={targetRefScroll}
-          className="px-9 text-balance mb-9 text-3xl font-medium tracking-tight pb-9 sm:text-4xl"
-        >
+        <h2 className="px-9 text-balance mb-9 text-3xl font-medium tracking-tight pb-9 sm:text-4xl">
           Update Car{" "}
         </h2>
         <form className="px-9 py-3 bg-slate-50	">
@@ -372,7 +369,7 @@ export default function UpdateCar() {
           <button
             onClick={handleSubmit(onSubmit)}
             type="submit"
-            className="mt-9 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="mt-9 rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm"
           >
             Submit
           </button>

@@ -13,8 +13,6 @@ export default function Checkbox({
   options,
   label,
 }) {
-  //   const [selected, setSelected] = useState(people[3])
-
   return (
     <Listbox value={selectedOption} onChange={changeHandler}>
       <Label className="block text-sm/6 font-medium text-gray-900">

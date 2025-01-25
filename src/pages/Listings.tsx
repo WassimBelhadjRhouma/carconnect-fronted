@@ -23,7 +23,6 @@ export default function Listings() {
   const deleteCarMutation = useMutation({
     mutationFn: (carId: number) => CarService.deleteCar(carId),
     onSuccess: (_, carId) => {
-      // Update the cache to remove the deleted car
       queryClient.setQueryData<Car[]>(["myCars"], (oldCars) =>
         oldCars ? oldCars.filter((car) => car.id !== carId) : []
       );
@@ -35,8 +34,6 @@ export default function Listings() {
   const deleteCar = (id) => {
     deleteCarMutation.mutate(id);
   };
-
-  console.log(cars, isLoading, error);
 
   return (
     <div className="bg-white">

@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { APP_ROUTES, PATHS } from "./routes";
 import ProtectedRoute from "./ProtectedRoutes";
 import PublicRoute from "./PublicRoutes";
-import OnlyAdmin from "./AdminRoutes";
 
 const AppRoutes: React.FC = () => (
   <Routes>

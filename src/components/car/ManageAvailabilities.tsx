@@ -1,26 +1,15 @@
-import { Car } from "../../interfaces/CarInterfaces";
-import { StarIcon } from "@heroicons/react/20/solid";
-import classNames from "classnames";
-import { Link, useNavigate } from "react-router-dom";
 import { TrashIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import CarService from "../../services/carService";
 import { DateInterval } from "../../interfaces/BookingInterfaces";
 import useBlockedDates from "../../hooks/useBlockedDates";
 import Calendar from "../booking/Calendar";
+import { format } from "date-fns";
 
 interface ComponentProps {
   carId: number;
 }
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-];
+
 const ManageAvailabilities: React.FC<ComponentProps> = ({ carId }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -60,40 +49,33 @@ const ManageAvailabilities: React.FC<ComponentProps> = ({ carId }) => {
         removeBlockedDateInterval(unavailability);
       })
       .catch((err) => {
-        // setShowError(true);
         setLoading(false);
         console.log(err);
       });
-    // handleModal(false);
-    // navigate(navigateTo);
   };
   const submitHandler = () => {
     // setLoading(true);
     const data: DateInterval = {
-      unavailableFrom: startDate.format("YYYY-MM-DD"),
-      unavailableTo: endDate.format("YYYY-MM-DD"),
+      unavailableFrom: format(startDate, "yyyy-MM-dd"),
+      unavailableTo: format(endDate, "yyyy-MM-dd"),
     };
     CarService.addUnavailableDates(data, carId)
       .then((res) => {
         setStartDate(null);
         setEndDate(null);
         addBlockedDateInterval(res);
-
-        // setOpen(false);
       })
       .catch((err) => {
-        // setShowError(true);
-        // setLoading(false);
         console.log(err);
       });
   };
 
   return (
     <>
-      <div className="px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-2 py-10">
         <div className="sm:flex sm:items-center">
-          <div className="sm:flex-auto">
-            <h1 className="text-base font-semibold text-gray-900">
+          <div className="sm:flex-auto ">
+            <h1 className="text-base text-xl font-semibold text-gray-900">
               Availabilities
             </h1>
             <p className="mt-2 text-sm text-gray-700">
@@ -110,6 +92,7 @@ const ManageAvailabilities: React.FC<ComponentProps> = ({ carId }) => {
             handleStartDate={handleStartDate}
             handleEndDate={handleEndDate}
             handleCalendarError={handleCalendarError}
+            months={2}
           />{" "}
           <div className="mt-4 ">
             <button

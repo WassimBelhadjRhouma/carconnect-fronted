@@ -23,8 +23,6 @@ const BookingService = {
   getBookings: async (): Promise<GetBookingsResponse> => {
     try {
       const res = await ApiClient.get(`${pathURL}/all`);
-      console.log(res);
-
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -34,7 +32,6 @@ const BookingService = {
     bookingId: Number,
     status: BookingStatus
   ): Promise<any> => {
-    console.log(bookingId, status);
     try {
       const res = await ApiClient.put(`${pathURL}/${bookingId}/status`, null, {
         params: {
@@ -47,10 +44,5 @@ const BookingService = {
       throw new Error(error);
     }
   },
-
-  //   deleteCar: (carId) => axios.delete(`${API_BASE_URL}/${carId}`),
-  //   updateCar: (carId, updates) =>
-  //     axios.patch(`${API_BASE_URL}/${carId}`, updates),
-  // };
 };
 export default BookingService;

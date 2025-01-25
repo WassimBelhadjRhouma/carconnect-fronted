@@ -7,8 +7,6 @@ const pathURL = "/reviews";
 
 const ReviewService = {
   addReview: async (requestBody: Review): Promise<AxiosResponse<any>> => {
-    console.log(requestBody);
-
     try {
       const res = await ApiClient.post(pathURL, {
         ...requestBody,
@@ -31,7 +29,6 @@ const ReviewService = {
     bookingId: Number,
     status: BookingStatus
   ): Promise<any> => {
-    console.log(bookingId, status);
     try {
       const res = await ApiClient.put(`${pathURL}/${bookingId}/status`, null, {
         params: {
@@ -44,10 +41,5 @@ const ReviewService = {
       throw new Error(error);
     }
   },
-
-  //   deleteCar: (carId) => axios.delete(`${API_BASE_URL}/${carId}`),
-  //   updateCar: (carId, updates) =>
-  //     axios.patch(`${API_BASE_URL}/${carId}`, updates),
-  // };
 };
 export default ReviewService;

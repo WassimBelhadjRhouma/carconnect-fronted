@@ -3,17 +3,16 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
-import { FunnelIcon, StarIcon } from "@heroicons/react/20/solid";
+import { FunnelIcon } from "@heroicons/react/20/solid";
 
-import { filters, priceLabels } from "../../constants/FilterConstants";
 import { SubmitHandler, useForm } from "react-hook-form";
 import FilterElement from "./FilterElement";
 
 export interface FilterFormInputs {
-  price?: Number[]; // For multi-checkbox options
-  make?: string; // For the radio option
-  drivingMode?: string; // For the radio option
-  fuelType?: string; // For the radio option
+  price?: Number[];
+  make?: string;
+  drivingMode?: string;
+  fuelType?: string;
 }
 
 const Filter = ({ setSelectedFilters }) => {
@@ -42,7 +41,7 @@ const Filter = ({ setSelectedFilters }) => {
     const finalFilter = {};
     for (const key in data) {
       if (data[key]) {
-        finalFilter[key] = data[key]; // Add key-value pair to the object
+        finalFilter[key] = data[key];
       }
     }
     return finalFilter;
@@ -112,7 +111,7 @@ const Filter = ({ setSelectedFilters }) => {
         <button
           onClick={handleSubmit(onSubmit)}
           style={{ margin: "2rem 0 0 8rem " }}
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-900"
         >
           Apply Filters
         </button>

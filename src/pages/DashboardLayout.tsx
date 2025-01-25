@@ -98,9 +98,6 @@ const DashboardLayout: React.FC = () => {
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon aria-hidden="true" className="size-6" />
             </button>
-            {/* Separator */}
-
-            {/* <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6"></div> */}
           </div>
 
           <main className="py-10">
@@ -130,8 +127,6 @@ const DashboardLayout: React.FC = () => {
       </div>
     </>
   );
-
-  //////////////////////////////////////////////////////////////////////////////////
 };
 
 export default DashboardLayout;

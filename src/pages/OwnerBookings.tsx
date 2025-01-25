@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import BookingCard from "../components/booking/BookingCard";
+import { useState } from "react";
 import BookingService from "../services/bookingService";
 import { EnvelopeIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 
@@ -10,7 +9,6 @@ import {
   BookingTypes,
   GetBookingsResponse,
 } from "../interfaces/BookingInterfaces";
-import { DocumentIcon } from "@heroicons/react/24/outline";
 import BookingSection from "../components/booking/BookingSection";
 import cx from "clsx";
 
@@ -73,8 +71,6 @@ export default function OwnerBookings() {
         break;
     }
   });
-
-  console.log("bookings:", bookings);
 
   return (
     <div className="bg-white">

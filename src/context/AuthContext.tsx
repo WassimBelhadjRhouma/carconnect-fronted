@@ -1,16 +1,12 @@
 import React, { createContext, useEffect, useState } from "react";
 import { authService } from "../services/authService";
-import {
-  LoginResponse,
-  LoginUserData,
-  USER_TYPES,
-} from "../interfaces/AuthInterfaces";
+import { LoginUserData, USER_TYPES } from "../interfaces/AuthInterfaces";
 import UserService from "../services/UserService";
 import { setApiClientToken } from "../services/apiClient";
 import { USER_STATUS } from "../interfaces/UserInterfaces";
 
 export interface AuthContextProps {
-  user?: any | null; // Replace with your user model
+  user?: any | null;
   login: (data: LoginUserData) => Promise<void>;
   logout: () => void;
   updateStatus: () => void;
@@ -34,8 +30,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [userName, setUserName] = useState<string | null>(null);
 
   const login = async (data: LoginUserData) => {
-    console.log("i am here ");
-
     try {
       const { token, role, firstName, lastName } = await authService.logInUser(
         data

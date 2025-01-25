@@ -24,12 +24,3 @@ export const UpdateCarSchema = BaseCarSchema.extend({
   city: z.string().min(3, "City is required"),
   streetAddress: z.string().min(3, "Street Address is required"),
 });
-
-// .refine((ctx) => ctx.make !== selectPhrases.make, {
-//   message: "Please Select a brand",
-//   path: ["make"],
-// });
-//   .refine((ctx) => ctx.model !== selectPhrases.model, {
-//     message: "Please Select a model",
-//     path: ["model"],
-//   });

@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import BookingCard from "../components/booking/BookingCard";
+import { useState } from "react";
 import BookingService from "../services/bookingService";
 import { EnvelopeIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 
@@ -10,9 +9,7 @@ import {
   BookingTypes,
   GetBookingsResponse,
 } from "../interfaces/BookingInterfaces";
-import { DocumentIcon } from "@heroicons/react/24/outline";
 import BookingSection from "../components/booking/BookingSection";
-import ReviewModal from "../components/reviewComponent/ReviewModal";
 import cx from "clsx";
 
 enum TabType {
@@ -49,14 +46,12 @@ export default function OwnerBookings() {
       newStatus: BookingStatus;
     }) => BookingService.updateBookingStatus(bookingId, newStatus),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookings"] }); // Refetch the bookings
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
     },
     onError: (error) => {
       console.error("Error updating booking:", error);
     },
   });
-  console.log(bookings);
-
   const pendingBookings: Booking[] = [];
   const confirmedBookings: Booking[] = [];
   const completedBookings: Booking[] = [];
